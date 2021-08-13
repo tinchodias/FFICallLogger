@@ -5,17 +5,14 @@ I'm a logger for TFFI calls.
 
 TFSameThreadCall compile: 
 'executeOn: runner withArguments: aCollection
-	(WrapperSignal on: function) emit.
+	(WrapperSignal on: {function. aCollection}) emit.
 	function validate.	
 	^ self invokeFunction: function withArguments: aCollection'
 
 
 # Use like:
 
-	FFICallLogger start.
 	FFICallLogger instance inspect.
-	FFICallLogger instance addIgnoredAddressFromRecordings.
-	FFICallLogger reset.
 
 "
 Class {
@@ -29,12 +26,6 @@ Class {
 	#category : #'FFICallLogger-Core'
 }
 
-{ #category : #accessing }
-FFICallLogger class >> start [
-
-	self instance startFor: WrapperSignal
-]
-
 { #category : #'system startup' }
 FFICallLogger class >> startUp: resuming [
 	"If starting the image, all external addresses should be zero then we remove them."
@@ -46,12 +37,6 @@ FFICallLogger class >> startUp: resuming [
 FFICallLogger >> addIgnoredAddress: anExternalAddress [
 
 	ignoredAddresses add: anExternalAddress
-]
-
-{ #category : #accessing }
-FFICallLogger >> addIgnoredAddressFromRecordings [
-
-	self recordings do: [ :each | self addIgnoredAddress: each target address ]
 ]
 
 { #category : #accessing }
@@ -98,7 +83,13 @@ FFICallLogger >> resetIgnored [
 { #category : #accessing }
 FFICallLogger >> shouldIgnore: aWrapperSignal [
 	
-	^ (ignoredAddresses includes: aWrapperSignal target address) or: [ 
-		(ignoredModuleNames includes: aWrapperSignal target moduleName) or: [ 
+	^ (ignoredAddresses includes: aWrapperSignal target first address) or: [ 
+		(ignoredModuleNames includes: aWrapperSignal target first moduleName) or: [ 
 			(ignoredProcessIds includes: aWrapperSignal processId) ] ]
+]
+
+{ #category : #accessing }
+FFICallLogger >> start [
+
+	self startFor: WrapperSignal
 ]

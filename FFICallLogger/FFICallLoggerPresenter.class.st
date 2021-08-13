@@ -35,18 +35,24 @@ FFICallLoggerPresenter >> initializeColumns [
 			yourself);
 		addColumn: ((SpStringTableColumn
 			title: 'Function'
-			evaluated: [ :each | each target functionName asString ])
-			width: 250;
+			evaluated: [ :each | each target first functionName asString ])
+			width: 200;
 			yourself);
 		addColumn: (SpStringTableColumn
 			title: 'Address'
-			evaluated: [ :each | String streamContents: [ :s | each target address printOn: s ] ]);
+			evaluated: [ :each | 
+				String streamContents: [ :s | each target first address printOn: s ] ]);
+		addColumn: ((SpStringTableColumn
+			title: 'Arguments'
+			evaluated: [ :each | each target second asString ])
+			width: 200;
+			yourself);
 		addColumn: (SpStringTableColumn
 			title: 'Process'
 			evaluated: [ :each | each processId asString ]);
 		addColumn: ((SpStringTableColumn
 			title: 'Module'
-			evaluated: [ :each | each target moduleName asString ])
+			evaluated: [ :each | each target first moduleName asString ])
 			width: 70;
 			yourself).
 		
@@ -116,6 +122,16 @@ FFICallLoggerPresenter >> initializeToolbar [
 			label: 'Stop';
 			icon: (self iconNamed: #smallCancel);
 			action: [ logger stop ];
+			yourself);
+		addItem: (SpToolbarButtonPresenter new
+			label: 'Reset calls';
+			icon: (self iconNamed: #refresh);
+			action: [ logger reset ];
+			yourself);
+		addItem: (SpToolbarButtonPresenter new
+			label: 'Reset ignored';
+			icon: (self iconNamed: #refresh);
+			action: [ logger resetIgnored ];
 			yourself)
 ]
 
@@ -127,8 +143,8 @@ FFICallLoggerPresenter >> setModelBeforeInitialization: aLogger [
 	"We assume that deferrer won't be scheduled before the table is initialized."
 	refreshDeferrer := MinMaxDeferrer
 		value: [ table items: logger recordings reverse ]
-		notBefore: 50 milliSeconds
-		notAfter: 100 milliSeconds.
+		notBefore: 100 milliSeconds
+		notAfter:  250 milliSeconds.
 
 	logger announcer weak
 		when: Announcement
