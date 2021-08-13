@@ -12,7 +12,7 @@ TFSameThreadCall compile:
 
 # Use like:
 
-	FFICallLogger startFor: WrapperSignal.
+	FFICallLogger start.
 	FFICallLogger instance inspect.
 	FFICallLogger instance addIgnoredAddressFromRecordings.
 	FFICallLogger reset.
@@ -29,11 +29,17 @@ Class {
 	#category : #'FFICallLogger-Core'
 }
 
+{ #category : #accessing }
+FFICallLogger class >> start [
+
+	self instance startFor: WrapperSignal
+]
+
 { #category : #'system startup' }
 FFICallLogger class >> startUp: resuming [
 	"If starting the image, all external addresses should be zero then we remove them."
 
-	resuming ifTrue: [ self resetAllInstances ]
+	resuming ifTrue: [ self resetInstance ]
 ]
 
 { #category : #accessing }
