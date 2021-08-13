@@ -1,3 +1,6 @@
+"
+I am a Spec presenter to show signals recorded by a FFICallLogger.
+"
 Class {
 	#name : #FFICallLoggerPresenter,
 	#superclass : #SpPresenter,
@@ -7,7 +10,7 @@ Class {
 		'logger',
 		'toolbar'
 	],
-	#category : #FFICallLogger
+	#category : #'FFICallLogger-UI'
 }
 
 { #category : #specs }
@@ -35,24 +38,25 @@ FFICallLoggerPresenter >> initializeColumns [
 			yourself);
 		addColumn: ((SpStringTableColumn
 			title: 'Function'
-			evaluated: [ :each | each target first functionName asString ])
-			width: 200;
+			evaluated: [ :each | each functionName ])
 			yourself);
-		addColumn: (SpStringTableColumn
-			title: 'Address'
-			evaluated: [ :each | 
-				String streamContents: [ :s | each target first address printOn: s ] ]);
 		addColumn: ((SpStringTableColumn
 			title: 'Arguments'
-			evaluated: [ :each | each target second asString ])
-			width: 200;
+			evaluated: [ :each |
+				String streamContents: [:s |
+					each arguments
+						do: [:address | address printOn: s ]
+						separatedBy: [ s nextPutAll: ', ' ] ] ])
+"			width: 200;"
 			yourself);
-		addColumn: (SpStringTableColumn
-			title: 'Process'
-			evaluated: [ :each | each processId asString ]);
+		addColumn: ((SpStringTableColumn
+			title: 'Answer'
+			evaluated: [ :each | String streamContents: [ :s | each answer printOn: s ] ])
+			width: 70;
+			yourself);
 		addColumn: ((SpStringTableColumn
 			title: 'Module'
-			evaluated: [ :each | each target first moduleName asString ])
+			evaluated: [ :each | each moduleName ])
 			width: 70;
 			yourself).
 		
@@ -61,36 +65,33 @@ FFICallLoggerPresenter >> initializeColumns [
 { #category : #initialization }
 FFICallLoggerPresenter >> initializeContextMenu [
 
-	table
-		contextMenu: (SpMenuPresenter new 
+	table contextMenu: [
+		| selectedSignal |
+		selectedSignal := table selectedItem.
+		
+		SpMenuPresenter new 
+			addItem: [ :item |
+				item
+					name: 'Inspect signal';
+					action: [ selectedSignal inspect ] ];
+			addItem: [ :item |
+				item
+					name: 'Add as ignored function';
+					action: [ 
+						logger addIgnoreRule: [ :signal | signal functionName = selectedSignal functionName ] ] ];
+			addItem: [ :item |
+				item
+					name: 'Add as ignored module';
+					action: [ 
+						logger addIgnoreRule: [ :signal | signal moduleName = selectedSignal moduleName ] ] ];
 			addItem: [ :item |
 				item
 					name: 'Add as ignored process';
 					action: [ 
-						logger addIgnoredProcessId: table selectedItem processId ] ];
-			addItem: [ :item |
-				item
-					name: 'Add as ignored module';
-"					icon: (self iconNamed: #glamorousRemove);"
-					action: [ 
-						logger addIgnoredModule: table selectedItem target moduleName ] ];
-			addItem: [ :item |
-				item
-					name: 'Add as ignored address';
-					action: [ 
-						logger addIgnoredAddress: table selectedItem target address] ];
-			addItem: [ :item |
-				item
-					name: 'Add ALL as ignored addresses';
-					action: [ table items do: [ :each |
-							logger addIgnoredAddress: each target address ] ] ];
-			addItem: [ :item |
-				item
-					name: 'Reset';
-					action: [
-						logger reset.
-						refreshDeferrer schedule ] ];
-			yourself).
+						logger addIgnoreRule: [ :signal | signal processId = selectedSignal processId ] ] ];
+			yourself
+
+		] 
 ]
 
 { #category : #initialization }
@@ -144,7 +145,7 @@ FFICallLoggerPresenter >> setModelBeforeInitialization: aLogger [
 	refreshDeferrer := MinMaxDeferrer
 		value: [ table items: logger recordings reverse ]
 		notBefore: 100 milliSeconds
-		notAfter:  250 milliSeconds.
+		notAfter:  500 milliSeconds.
 
 	logger announcer weak
 		when: Announcement

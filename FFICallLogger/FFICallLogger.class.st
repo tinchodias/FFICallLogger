@@ -1,27 +1,31 @@
 "
-I'm a logger for TFFI calls.
+I'm a logger for FFICallSignal.
 
 # Install with:	
 
 TFSameThreadCall compile: 
 'executeOn: runner withArguments: aCollection
-	(WrapperSignal on: {function. aCollection}) emit.
-	function validate.	
-	^ self invokeFunction: function withArguments: aCollection'
+	| answer |
+	function validate.
+	answer := self invokeFunction: function withArguments: aCollection.
+	(FFICallSignal
+		function: function
+		arguments: aCollection
+		answer: (answer == self ifTrue: [ nil ] ifFalse: [ answer ])) emit.
+	^ answer'
 
 
 # Use like:
 
 	FFICallLogger instance inspect.
+	FFICallLogger instance reset.
 
 "
 Class {
 	#name : #FFICallLogger,
 	#superclass : #CircularMemoryLogger,
 	#instVars : [
-		'ignoredAddresses',
-		'ignoredModuleNames',
-		'ignoredProcessIds'
+		'ignoreRules'
 	],
 	#category : #'FFICallLogger-Core'
 }
@@ -34,21 +38,9 @@ FFICallLogger class >> startUp: resuming [
 ]
 
 { #category : #accessing }
-FFICallLogger >> addIgnoredAddress: anExternalAddress [
+FFICallLogger >> addIgnoreRule: aUnaryBlockClosure [
 
-	ignoredAddresses add: anExternalAddress
-]
-
-{ #category : #accessing }
-FFICallLogger >> addIgnoredModule: aString [
-
-	ignoredModuleNames add: aString
-]
-
-{ #category : #accessing }
-FFICallLogger >> addIgnoredProcessId: aProcessId [
-
-	ignoredProcessIds add: aProcessId
+	ignoreRules := ignoreRules copyWith: aUnaryBlockClosure
 ]
 
 { #category : #initialization }
@@ -66,30 +58,29 @@ FFICallLogger >> inspectorForCallsIn: aBuilder [
 ]
 
 { #category : #accessing }
-FFICallLogger >> nextPut: aWrapperSignal [
+FFICallLogger >> nextPut: aFFICallSignal [
 
-	(self shouldIgnore: aWrapperSignal) ifFalse: [
-		super nextPut: aWrapperSignal ]
+	(self shouldIgnore: aFFICallSignal) ifTrue: [ ^ self  ].
+
+	aFFICallSignal prepareAsRecording.
+	super nextPut: aFFICallSignal 
 ]
 
 { #category : #accessing }
 FFICallLogger >> resetIgnored [
 
-	ignoredAddresses := WeakSet new.
-	ignoredModuleNames := WeakSet new.
-	ignoredProcessIds := WeakSet new.
+	ignoreRules := {}.
+
 ]
 
 { #category : #accessing }
-FFICallLogger >> shouldIgnore: aWrapperSignal [
-	
-	^ (ignoredAddresses includes: aWrapperSignal target first address) or: [ 
-		(ignoredModuleNames includes: aWrapperSignal target first moduleName) or: [ 
-			(ignoredProcessIds includes: aWrapperSignal processId) ] ]
+FFICallLogger >> shouldIgnore: aSignal [
+
+	^ ignoreRules anySatisfy: [ :each | each value: aSignal ]
 ]
 
 { #category : #accessing }
 FFICallLogger >> start [
 
-	self startFor: WrapperSignal
+	self startFor: FFICallSignal
 ]
