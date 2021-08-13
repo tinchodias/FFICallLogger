@@ -1,4 +1,6 @@
 "
+I'm a logger for TFFI calls.
+
 # Install with:	
 
 TFSameThreadCall compile: 
@@ -12,12 +14,8 @@ TFSameThreadCall compile:
 
 	FFICallLogger startFor: WrapperSignal.
 	FFICallLogger instance inspect.
-	FFICallLogger instance recordings inspect.
 	FFICallLogger instance addIgnoredAddressFromRecordings.
 	FFICallLogger reset.
-
-	FFICallLogger instance resetIgnoredAddresses
-	FFICallLogger stop.
 
 "
 Class {

@@ -4,7 +4,8 @@ Class {
 	#instVars : [
 		'table',
 		'refreshDeferrer',
-		'logger'
+		'logger',
+		'toolbar'
 	],
 	#category : #FFICallLogger
 }
@@ -13,6 +14,7 @@ Class {
 FFICallLoggerPresenter class >> defaultSpec [
 
 	^ SpBoxLayout newVertical
+		add: #toolbar expand: false;
 		add: #table;
 		yourself
 ]
@@ -89,13 +91,32 @@ FFICallLoggerPresenter >> initializeContextMenu [
 FFICallLoggerPresenter >> initializePresenters [ 
 	"We assume the logger was set previously."
 
+	toolbar := self newToolbar.
+	self initializeToolbar.
+
 	table := self newTable.
-	
 	self initializeColumns.
 	self initializeContextMenu.
 	
+	"Trigger initial refresh"
 	refreshDeferrer schedule.
 
+]
+
+{ #category : #initialization }
+FFICallLoggerPresenter >> initializeToolbar [
+
+	toolbar
+		addItem: (SpToolbarButtonPresenter new
+			label: 'Start';
+			icon: (self iconNamed: #smallOk);
+			action: [ logger start ];
+			yourself);
+		addItem: (SpToolbarButtonPresenter new
+			label: 'Stop';
+			icon: (self iconNamed: #smallCancel);
+			action: [ logger stop ];
+			yourself)
 ]
 
 { #category : #initialization }
