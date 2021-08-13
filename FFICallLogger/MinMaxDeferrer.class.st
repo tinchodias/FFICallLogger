@@ -1,3 +1,23 @@
+"
+I delay code execution in a new Process.
+
+My responsability is to schedule sending #value to an object within certain window of time.
+
+This is an example of instance creation:
+
+~~~
+	MinMaxDeferrer
+		value: [ 'Hola' traceCr ]
+		notBefore: 100 milliSeconds
+		notAfter:  500 milliSeconds.
+~~~
+
+Each time this deferrer receives #schedule, a Process is forked to wait **at least** 100ms to value the closure (this is the #minDeferral duration).
+During the wait, any other #schedule will postpone the evaluation 100ms more.
+But there is a limit for postponing: this is the #maxDeferral of 500ms in this example.
+
+The #processName: and #proecssPriority: methods provide a way to customize the creation of the mentioned Process.
+"
 Class {
 	#name : #MinMaxDeferrer,
 	#superclass : #Object,
@@ -8,9 +28,9 @@ Class {
 		'firstSchedule',
 		'minDeferral',
 		'maxDeferral',
-		'messageSend',
 		'processPriority',
-		'processName'
+		'processName',
+		'valuable'
 	],
 	#category : #'FFICallLogger-Utils'
 }
@@ -65,15 +85,28 @@ MinMaxDeferrer >> flush [
 
 	process ifNotNil: [
 		"Execute deferred action and clean up"
-		[ messageSend value ] ensure: [ process := nil ] 
+		[ valuable value ] ensure: [ process := nil ] 
 	].
 ]
 
+{ #category : #scheduling }
+MinMaxDeferrer >> forkDelayProcess [
+
+	process := [
+		"Loop until enough time passed since last #schedule"
+		[ DateAndTime now < (lastSchedule + minDeferral min: firstSchedule + maxDeferral) ]
+			whileTrue: [ minDeferral wait ].
+		
+		"Execute the deferred action (if not done before) and clean up"
+		self flush.
+	] forkAt: processPriority named: processName
+]
+
 { #category : #initialization }
-MinMaxDeferrer >> initializeWith: aMessageSend minDeferral: aDuration maxDeferral: anotherDuration [
+MinMaxDeferrer >> initializeWith: aValuable minDeferral: aDuration maxDeferral: anotherDuration [
 
 	self initialize.
-	messageSend := aMessageSend.
+	valuable := aValuable.
 	minDeferral := aDuration.
 	maxDeferral := anotherDuration.
 	
@@ -91,18 +124,6 @@ MinMaxDeferrer >> maxDeferral [
 MinMaxDeferrer >> maxDeferral: aDuration [
 
 	maxDeferral := aDuration
-]
-
-{ #category : #accessing }
-MinMaxDeferrer >> messageSend [
-
-	^ messageSend
-]
-
-{ #category : #accessing }
-MinMaxDeferrer >> messageSend: aMessageSend [
-
-	messageSend := aMessageSend
 ]
 
 { #category : #accessing }
@@ -142,23 +163,22 @@ MinMaxDeferrer >> processPriority: anObject [
 ]
 
 { #category : #scheduling }
-MinMaxDeferrer >> runMessageProcess [
-
-	process := [
-		"Loop until enough time passed since last #schedule"
-		[ DateAndTime now < (lastSchedule + minDeferral min: firstSchedule + maxDeferral) ]
-			whileTrue: [ minDeferral wait ].
-		
-		"Execute the deferred action (if not done before) and clean up"
-		self flush.
-	] forkAt: processPriority named: processName
-]
-
-{ #category : #scheduling }
 MinMaxDeferrer >> schedule [
 
 	lastSchedule := DateAndTime now.
 	process ifNil: [ 
 		firstSchedule := lastSchedule.
-		DefaultExecutionEnvironment beActiveDuring: [ self runMessageProcess ]]
+		DefaultExecutionEnvironment beActiveDuring: [ self forkDelayProcess ]]
+]
+
+{ #category : #accessing }
+MinMaxDeferrer >> valuable [
+
+	^ valuable
+]
+
+{ #category : #accessing }
+MinMaxDeferrer >> valuable: aValuable [
+
+	valuable := aValuable
 ]
