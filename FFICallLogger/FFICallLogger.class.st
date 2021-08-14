@@ -18,7 +18,7 @@ TFSameThreadCall compile:
 # Use like:
 
 	FFICallLogger instance inspect.
-	FFICallLogger instance reset.
+	FFICallLogger resetInstance.
 
 "
 Class {
@@ -40,21 +40,41 @@ FFICallLogger class >> startUp: resuming [
 { #category : #accessing }
 FFICallLogger >> addIgnoreRule: aUnaryBlockClosure [
 
-	ignoreRules := ignoreRules copyWith: aUnaryBlockClosure
+	ignoreRules := ignoreRules copyWith: aUnaryBlockClosure.
+	self announceChanged.
+]
+
+{ #category : #accessing }
+FFICallLogger >> announceChanged [
+
+	self announcer announce: (ValueChanged newValue: self)
+]
+
+{ #category : #accessing }
+FFICallLogger >> ignoreRules [
+
+	^ ignoreRules
 ]
 
 { #category : #initialization }
 FFICallLogger >> initialize [ 
 
 	super initialize.
-	self resetIgnored.
+	self resetIgnoreRules.
 ]
 
 { #category : #spec }
 FFICallLogger >> inspectorForCallsIn: aBuilder [
 	<inspectorPresentationOrder: -1 title: 'Calls'>
 
-	^ aBuilder instantiate: FFICallLoggerPresenter on: self
+	^ aBuilder instantiate: FFICallsPresenter on: self
+]
+
+{ #category : #spec }
+FFICallLogger >> inspectorForIgnoreRulesIn: aBuilder [
+	<inspectorPresentationOrder: -0.5 title: 'Ignore Rules'>
+
+	^ aBuilder instantiate: FFIIgnoredRulesPresenter on: self
 ]
 
 { #category : #accessing }
@@ -67,10 +87,17 @@ FFICallLogger >> nextPut: aFFICallSignal [
 ]
 
 { #category : #accessing }
-FFICallLogger >> resetIgnored [
+FFICallLogger >> removeIgnoreRule: aUnaryBlockClosure [
+
+	ignoreRules := ignoreRules copyWithout: aUnaryBlockClosure.
+	self announceChanged.
+]
+
+{ #category : #accessing }
+FFICallLogger >> resetIgnoreRules [
 
 	ignoreRules := {}.
-
+	self announceChanged.
 ]
 
 { #category : #accessing }
@@ -83,12 +110,12 @@ FFICallLogger >> shouldIgnore: aSignal [
 FFICallLogger >> start [
 
 	self startFor: FFICallSignal.
-	self announcer announce: (ValueChanged newValue: self).
+	self announceChanged
 ]
 
 { #category : #accessing }
 FFICallLogger >> stop [
 
 	super stop.
-	self announcer announce: (ValueChanged newValue: self).
+	self announceChanged
 ]

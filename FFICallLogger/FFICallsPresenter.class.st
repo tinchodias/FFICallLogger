@@ -2,7 +2,7 @@
 I am a Spec presenter to show signals recorded by a FFICallLogger.
 "
 Class {
-	#name : #FFICallLoggerPresenter,
+	#name : #FFICallsPresenter,
 	#superclass : #SpPresenter,
 	#instVars : [
 		'table',
@@ -16,7 +16,7 @@ Class {
 }
 
 { #category : #specs }
-FFICallLoggerPresenter class >> defaultSpec [
+FFICallsPresenter class >> defaultSpec [
 
 	^ SpBoxLayout newVertical
 		add: #toolbar expand: false;
@@ -25,7 +25,7 @@ FFICallLoggerPresenter class >> defaultSpec [
 ]
 
 { #category : #initialization }
-FFICallLoggerPresenter >> initializeColumns [
+FFICallsPresenter >> initializeColumns [
 
 	table
 		addColumn: ((SpStringTableColumn
@@ -70,7 +70,7 @@ FFICallLoggerPresenter >> initializeColumns [
 ]
 
 { #category : #initialization }
-FFICallLoggerPresenter >> initializeContextMenu [
+FFICallsPresenter >> initializeContextMenu [
 
 	table contextMenu: [
 		| selectedSignal |
@@ -102,7 +102,7 @@ FFICallLoggerPresenter >> initializeContextMenu [
 ]
 
 { #category : #initialization }
-FFICallLoggerPresenter >> initializePresenters [ 
+FFICallsPresenter >> initializePresenters [ 
 	"We assume the logger was set previously."
 
 	toolbar := self newToolbar.
@@ -118,7 +118,7 @@ FFICallLoggerPresenter >> initializePresenters [
 ]
 
 { #category : #initialization }
-FFICallLoggerPresenter >> initializeToolbar [
+FFICallsPresenter >> initializeToolbar [
 
 	toolbar
 		addItem: (startButton := SpToolbarButtonPresenter new
@@ -132,19 +132,14 @@ FFICallLoggerPresenter >> initializeToolbar [
 			action: [ logger stop ];
 			yourself);
 		addItem: (SpToolbarButtonPresenter new
-			label: 'Reset calls';
+			label: 'Clear calls';
 			icon: (self iconNamed: #refresh);
 			action: [ logger reset ];
-			yourself);
-		addItem: (SpToolbarButtonPresenter new
-			label: 'Reset ignored';
-			icon: (self iconNamed: #refresh);
-			action: [ logger resetIgnored ];
 			yourself)
 ]
 
 { #category : #accessing }
-FFICallLoggerPresenter >> refresh [
+FFICallsPresenter >> refresh [
 
 	table items: logger recordings reverse.
 	startButton enabled: logger isRunning not.
@@ -153,7 +148,7 @@ FFICallLoggerPresenter >> refresh [
 ]
 
 { #category : #initialization }
-FFICallLoggerPresenter >> setModelBeforeInitialization: aLogger [
+FFICallsPresenter >> setModelBeforeInitialization: aLogger [
 
 	logger := aLogger.
 
