@@ -82,5 +82,13 @@ FFICallLogger >> shouldIgnore: aSignal [
 { #category : #accessing }
 FFICallLogger >> start [
 
-	self startFor: FFICallSignal
+	self startFor: FFICallSignal.
+	self announcer announce: (ValueChanged newValue: self).
+]
+
+{ #category : #accessing }
+FFICallLogger >> stop [
+
+	super stop.
+	self announcer announce: (ValueChanged newValue: self).
 ]

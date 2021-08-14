@@ -8,7 +8,9 @@ Class {
 		'table',
 		'refreshDeferrer',
 		'logger',
-		'toolbar'
+		'toolbar',
+		'startButton',
+		'stopButton'
 	],
 	#category : #'FFICallLogger-UI'
 }
@@ -29,16 +31,32 @@ FFICallLoggerPresenter >> initializeColumns [
 		addColumn: ((SpStringTableColumn
 			title: 'Date'
 			evaluated: [ :each | each timestamp asDate ddmmyyyy ])
-			width: 60;
+			width: 65;
 			yourself);
 		addColumn: ((SpStringTableColumn
 			title: 'Time'
 			evaluated: [ :each | each timestamp asTime asString ])
-			width: 90;
+			width: 112;
+			yourself);
+		addColumn: ((SpStringTableColumn
+			title: 'Process'
+			evaluated: [ :each | each processId ])
+			width: 95;
+			yourself);
+		addColumn: ((SpStringTableColumn
+			title: 'Module'
+			evaluated: [ :each | each moduleName ])
+			width: 70;
+			yourself);
+		addColumn: ((SpStringTableColumn
+			title: 'Answer'
+			evaluated: [ :each | String streamContents: [ :s | each answer printOn: s ] ])
+			width: 70;
 			yourself);
 		addColumn: ((SpStringTableColumn
 			title: 'Function'
 			evaluated: [ :each | each functionName ])
+			width: 150;
 			yourself);
 		addColumn: ((SpStringTableColumn
 			title: 'Arguments'
@@ -47,17 +65,6 @@ FFICallLoggerPresenter >> initializeColumns [
 					each arguments
 						do: [:address | address printOn: s ]
 						separatedBy: [ s nextPutAll: ', ' ] ] ])
-"			width: 200;"
-			yourself);
-		addColumn: ((SpStringTableColumn
-			title: 'Answer'
-			evaluated: [ :each | String streamContents: [ :s | each answer printOn: s ] ])
-			width: 70;
-			yourself);
-		addColumn: ((SpStringTableColumn
-			title: 'Module'
-			evaluated: [ :each | each moduleName ])
-			width: 70;
 			yourself).
 		
 ]
@@ -114,12 +121,12 @@ FFICallLoggerPresenter >> initializePresenters [
 FFICallLoggerPresenter >> initializeToolbar [
 
 	toolbar
-		addItem: (SpToolbarButtonPresenter new
+		addItem: (startButton := SpToolbarButtonPresenter new
 			label: 'Start';
 			icon: (self iconNamed: #smallOk);
 			action: [ logger start ];
 			yourself);
-		addItem: (SpToolbarButtonPresenter new
+		addItem: (stopButton := SpToolbarButtonPresenter new
 			label: 'Stop';
 			icon: (self iconNamed: #smallCancel);
 			action: [ logger stop ];
@@ -136,6 +143,15 @@ FFICallLoggerPresenter >> initializeToolbar [
 			yourself)
 ]
 
+{ #category : #accessing }
+FFICallLoggerPresenter >> refresh [
+
+	table items: logger recordings reverse.
+	startButton enabled: logger isRunning not.
+	stopButton enabled: logger isRunning.
+
+]
+
 { #category : #initialization }
 FFICallLoggerPresenter >> setModelBeforeInitialization: aLogger [
 
@@ -143,7 +159,7 @@ FFICallLoggerPresenter >> setModelBeforeInitialization: aLogger [
 
 	"We assume that deferrer won't be scheduled before the table is initialized."
 	refreshDeferrer := MinMaxDeferrer
-		value: [ table items: logger recordings reverse ]
+		value: (MessageSend receiver: self selector: #refresh)
 		notBefore: 100 milliSeconds
 		notAfter:  500 milliSeconds.
 
