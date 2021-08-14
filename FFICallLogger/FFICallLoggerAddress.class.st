@@ -13,6 +13,6 @@ Class {
 FFICallLoggerAddress >> printOn: aStream [
 
 	aStream
-		nextPut: $@;
-		nextPutAll: (self asInteger printStringHex)
+		nextPutAll: '@';
+		nextPutAll: self hex
 ]
