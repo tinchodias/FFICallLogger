@@ -1,18 +1,10 @@
 "
-I'm a logger for FFICallSignal.
+I'm a logger for FFI calls.
+
 
 # Install with:	
 
-TFSameThreadCall compile: 
-'executeOn: runner withArguments: aCollection
-	| answer |
-	function validate.
-	answer := self invokeFunction: function withArguments: aCollection.
-	(FFICallSignal
-		function: function
-		arguments: aCollection
-		answer: (answer == self ifTrue: [ nil ] ifFalse: [ answer ])) emit.
-	^ answer'
+	FFICallLogger install.
 
 
 # Use like:
@@ -29,6 +21,25 @@ Class {
 	],
 	#category : #'FFICallLogger-Core'
 }
+
+{ #category : #installation }
+FFICallLogger class >> install [
+	"
+	self install
+	"
+
+	TFSameThreadCall compile: 
+'executeOn: runner withArguments: aCollection
+	| answer |
+	function validate.
+	answer := self invokeFunction: function withArguments: aCollection.
+	(FFICallSignal
+		function: function
+		arguments: aCollection
+		answer: (answer == self ifTrue: [ nil ] ifFalse: [ answer ])) emit.
+	^ answer'
+
+]
 
 { #category : #'system startup' }
 FFICallLogger class >> startUp: resuming [
