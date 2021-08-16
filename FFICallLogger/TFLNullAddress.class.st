@@ -5,7 +5,7 @@ I implement singleton via #instance in class-side, and provide specialized print
 "
 Class {
 	#name : #TFLNullAddress,
-	#superclass : #ByteArray,
+	#superclass : #Object,
 	#type : #bytes,
 	#classInstVars : [
 		'instance'

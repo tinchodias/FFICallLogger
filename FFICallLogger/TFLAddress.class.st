@@ -1,5 +1,7 @@
 "
-I represent a a picture or snapshot of an ExternalAddress.
+I represent a ""immutable"" snapshot of an ExternalAddress.
+
+Maybe a bit more precisely, I'm a copy of the address that won't change.
 
 "
 Class {
@@ -17,6 +19,13 @@ TFLAddress class >> newFrom: anExternalAddress [
 	^ (self basicNew: sz)
 		replaceFrom: 1 to: sz with: anExternalAddress startingAt: 1;
 		yourself
+]
+
+{ #category : #printing }
+TFLAddress >> asString [
+	"Answer a string that represents the receiver."
+
+	^ self printString
 ]
 
 { #category : #printing }

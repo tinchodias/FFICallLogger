@@ -23,15 +23,32 @@ TFLFiltersPresenter class >> defaultSpec [
 		yourself
 ]
 
+{ #category : #private }
+TFLFiltersPresenter >> bodyFor: aBlockClosure [
+
+	^ aBlockClosure sourceNode body sourceCode	
+]
+
 { #category : #initialization }
 TFLFiltersPresenter >> initializeContextMenu [
 
 	list contextMenu: [
+		| selectedFilter |
+		selectedFilter := list selectedItem.
+		
 		SpMenuPresenter new 
 			addItem: [ :item |
 				item
+					name: 'Inspect';
+					action: [ selectedFilter inspect ] ];
+			addItem: [ :item |
+				item
+					name: 'Edit';
+					action: [ self openEditFilterDialogFor: selectedFilter ] ];
+			addItem: [ :item |
+				item
 					name: 'Remove';
-					action: [ logger removeFilter: list selectedItem ] ];
+					action: [ logger removeFilter: selectedFilter ] ];
 			yourself
 		] 
 ]
@@ -43,8 +60,10 @@ TFLFiltersPresenter >> initializePresenters [
 	toolbar := self newToolbar.
 	self initializeToolbar.
 
-	list := self newList.
-"	table display:[:each | each ]"
+	list := self newList
+		display: [ :each | self bodyFor: each ];
+		whenActivatedDo: [ :selection | self openEditFilterDialogFor: list selectedItem ];
+		yourself.
 	self initializeContextMenu.
 	
 	"Trigger initial refresh"
@@ -68,19 +87,22 @@ TFLFiltersPresenter >> initializeToolbar [
 			yourself)
 ]
 
-{ #category : #initialization }
+{ #category : #actions }
 TFLFiltersPresenter >> openAddFilterDialog [
 
-	| conditionString sourceCode blockWithCondition |
-	conditionString := self application newRequest
-		title: 'Add Filter';
-		label: 'Write the boolean condition for "[ :signal | <condition> ]". True means filter the signal. Accessors: #functionName, #moduleName, #arguments, #answer. Browse TFLSignal for more information.';
-		text: 'signal';
-		openModalWithSpec.
-	conditionString ifNil: [ ^ self ].
-	sourceCode := '[ :signal | {1} ]' format: { conditionString }.
-	blockWithCondition := self class compiler evaluate: sourceCode. 
-	logger addFilter: blockWithCondition
+	(self requestFilterBody: 'signal') ifNotNil: [ :body |
+		logger addFilterByCompiling: body ]
+]
+
+{ #category : #actions }
+TFLFiltersPresenter >> openEditFilterDialogFor: aFilter [
+
+	| currentBody |
+	currentBody := self bodyFor: aFilter.
+	(self requestFilterBody: currentBody) ifNotNil: [ :newBody | 
+		logger
+			addFilterByCompiling: newBody;
+			removeFilter: aFilter ]
 ]
 
 { #category : #accessing }
@@ -88,6 +110,17 @@ TFLFiltersPresenter >> refresh [
 
 	list items: logger filters.
 	clearButton enabled: logger filters isNotEmpty
+]
+
+{ #category : #private }
+TFLFiltersPresenter >> requestFilterBody: exampleBody [
+
+	^ self application newRequest
+		title: 'Filter';
+		label:  'Write the boolean criteria for "[ :signal | <criteria> ]", where True means filtering the signal. Tip: The accessors of TFLSignal are #functionName, #moduleName, #arguments, #answer.';
+		text: exampleBody;
+		openModalWithSpec
+
 ]
 
 { #category : #initialization }

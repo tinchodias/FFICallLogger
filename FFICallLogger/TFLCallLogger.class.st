@@ -51,9 +51,9 @@ TFLCallLogger class >> startUp: resuming [
 ]
 
 { #category : #accessing }
-TFLCallLogger >> addFilter: aUnaryBlockClosureThatAnswersBoolean [
+TFLCallLogger >> addFilter: aClosureThatReceivesSignalAndAnswersBoolean [
 
-	filters := filters copyWith: aUnaryBlockClosureThatAnswersBoolean.
+	filters := filters copyWith: aClosureThatReceivesSignalAndAnswersBoolean.
 	self announceChanged.
 ]
 
@@ -61,20 +61,41 @@ TFLCallLogger >> addFilter: aUnaryBlockClosureThatAnswersBoolean [
 TFLCallLogger >> addFilter: accessor deny: value [
 	"Add a filter like '[ :signal | signal <accessor> ~= <value> ]'"
 
-	| sourceCode aFilter |
-	sourceCode := '[ :signal | signal {1} ~= {2} ]' format: { accessor. value storeString }.
-	aFilter := self class compiler evaluate: sourceCode. 
-	self addFilter: aFilter
+	| body |
+	body := 'signal {1} ~= {2}' format: { accessor. value storeString }.
+	self addFilterByCompiling: body
+
 ]
 
 { #category : #convenience }
 TFLCallLogger >> addFilter: accessor equals: value [
 	"Add a filter like '[ :signal | signal <accessor> = <value> ]'"
 
+	| body |
+	body := 'signal {1} = {2}' format: { accessor. value storeString }.
+	self addFilterByCompiling: body
+]
+
+{ #category : #convenience }
+TFLCallLogger >> addFilterByCompiling: body [
+	"Add a filter like '[ :signal | <body> ]'"
+
 	| sourceCode aFilter |
-	sourceCode := '[ :signal | signal {1} = {2} ]' format: { accessor. value storeString }.
+	sourceCode := '[ :signal | {1} ]'
+		format: { body trimmed withSeparatorsCompacted }.
 	aFilter := self class compiler evaluate: sourceCode. 
 	self addFilter: aFilter
+
+]
+
+{ #category : #convenience }
+TFLCallLogger >> addFilterHasArgumentLike: value [
+	"Add a filter for calls with at least one argument that converted to string equals to <value> as string."
+
+	| body |
+	body := 'signal arguments anySatisfy: [ :each | each asString = {1} ]' 
+		format: { value asString storeString }.
+	self addFilterByCompiling: body
 ]
 
 { #category : #private }
@@ -99,9 +120,9 @@ TFLCallLogger >> initialize [
 { #category : #accessing }
 TFLCallLogger >> nextPut: aFFICallSignal [
 
-	(self shouldRecord: aFFICallSignal) ifFalse: [ ^ self  ].
+	aFFICallSignal prepareAsRecording. "TODO: argument filtering need to prepare not-lazily"
 
-	aFFICallSignal prepareAsRecording.
+	(self shouldRecord: aFFICallSignal) ifFalse: [ ^ self  ].
 	super nextPut: aFFICallSignal 
 ]
 

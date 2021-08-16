@@ -1,7 +1,7 @@
 Extension { #name : #Object }
 
 { #category : #'*FFICallLogger' }
-Object >> asFFILoggerRecording [
+Object >> asTFLRecording [
 
 	^ self
 ]

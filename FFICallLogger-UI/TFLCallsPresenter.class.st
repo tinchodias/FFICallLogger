@@ -81,6 +81,10 @@ TFLCallsPresenter >> initializeContextMenu [
 				item
 					name: 'Inspect signal';
 					action: [ selectedSignal inspect ] ];
+			addItem: [ :item |
+				item
+					name: 'Browse sender';
+					action: [ selectedSignal sender browse ] ];
 			addGroup: [ :aGroup |
 				aGroup
 					addItem: [ :item |
@@ -94,7 +98,17 @@ TFLCallsPresenter >> initializeContextMenu [
 					addItem: [ :item |
 						item
 							name: ('Don''t record calls to "{1}" process' format: { selectedSignal processId });
-							action: [ logger addFilter: #processId equals: selectedSignal processId ] ] ];
+							action: [ logger addFilter: #processId equals: selectedSignal processId ] ].
+						
+				selectedSignal arguments do: [ :each |
+					aGroup
+						addItem: [ :item |
+							item
+								name: ('Don''t record calls including "{1}" as argument' format: { each });
+								action: [ logger addFilterHasArgumentLike: each ] ]
+							]
+				
+				];
 			addGroup: [ :aGroup |
 				aGroup
 					addItem: [ :item |
@@ -108,10 +122,9 @@ TFLCallsPresenter >> initializeContextMenu [
 					addItem: [ :item |
 						item
 							name: ('Only record calls to "{1}" process' format: { selectedSignal processId });
-							action: [ logger addFilter: #processId equals: selectedSignal processId ] ] ];
-			yourself
+							action: [ logger addFilter: #processId equals: selectedSignal processId ] ] ]
 
-		] 
+			] 
 ]
 
 { #category : #initialization }

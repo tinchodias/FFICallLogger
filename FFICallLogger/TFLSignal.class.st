@@ -3,7 +3,7 @@ I'm a Beacon signal with information about a ThreadedFFI call that was just exec
 
 A started `TFLCallLogger instance` records me. Browse its class comment for more information.
 
-My instances have two states: ""initialized"" and ""prepared"". The method ""prepareAsRecording"" mutates an instance as a kind of snapshot, so posterior modifications on the original FFI call object are not lost. This is a performance optimization, to avoid preparing instances that are filtered.
+My instances have two states: ""initialized"" and ""prepared"". The method #prepareAsRecording mutates an instance as a kind of snapshot, so posterior modifications on the original FFI call object are not lost. This is a performance optimization, to avoid preparing instances that are filtered.
 
 "
 Class {
@@ -13,18 +13,20 @@ Class {
 		'arguments',
 		'answer',
 		'moduleName',
-		'functionName'
+		'functionName',
+		'sender'
 	],
 	#category : #'FFICallLogger-Core'
 }
 
 { #category : #'instance creation' }
-TFLSignal class >> function: aFunction arguments: aCollection answer: anObject [
+TFLSignal class >> function: aFunction arguments: aCollection answer: anObject sender: aCompiledMethod [
 
 	^ self basicNew
 		  initializeWithFunction: aFunction
 		  arguments: aCollection
-		  answer: anObject;
+		  answer: anObject
+		  sender: aCompiledMethod;
 		  yourself
 ]
 
@@ -47,13 +49,14 @@ TFLSignal >> functionName [
 ]
 
 { #category : #initialization }
-TFLSignal >> initializeWithFunction: aFunction arguments: aCollection answer: anObject [
+TFLSignal >> initializeWithFunction: aFunction arguments: aCollection answer: anObject sender: aCompiledMethod [
 
 	self initialize.
 	moduleName := aFunction moduleName.
 	functionName := aFunction functionName.
 	arguments := aCollection.
-	answer := anObject
+	answer := anObject.
+	sender := aCompiledMethod.
 ]
 
 { #category : #accessing }
@@ -72,10 +75,8 @@ TFLSignal >> name [
 TFLSignal >> prepareAsRecording [
 	"Copy collaborators as an 'immutable' objects."
 
-	arguments := arguments collect: [ :each | each asFFILoggerRecording ].
-	"Array streamContents: [
-		arguments do: [ :each |  ] ]."
-	answer := answer asFFILoggerRecording.
+	arguments := arguments collect: [ :each | each asTFLRecording ].
+	answer := answer asTFLRecording.
 ]
 
 { #category : #printing }
@@ -83,4 +84,10 @@ TFLSignal >> printOneLineContentsOn: stream [
 	
 	functionName printOn: stream.
 
+]
+
+{ #category : #accessing }
+TFLSignal >> sender [
+
+	^ sender
 ]
