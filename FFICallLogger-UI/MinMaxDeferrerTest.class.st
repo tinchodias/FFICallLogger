@@ -5,7 +5,7 @@ Class {
 		'count',
 		'deferrer'
 	],
-	#category : #'FFICallLogger-Tests'
+	#category : #'FFICallLogger-UI-Utils'
 }
 
 { #category : #accessing }

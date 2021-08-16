@@ -1,8 +1,8 @@
 "
-I am a Spec presenter to show signals recorded by a FFICallLogger.
+I am a Spec presenter to show signals recorded by a TFLCallLogger.
 "
 Class {
-	#name : #FFICallsPresenter,
+	#name : #TFLCallsPresenter,
 	#superclass : #SpPresenter,
 	#instVars : [
 		'table',
@@ -12,11 +12,11 @@ Class {
 		'startButton',
 		'stopButton'
 	],
-	#category : #'FFICallLogger-UI'
+	#category : #'FFICallLogger-UI-Core'
 }
 
 { #category : #specs }
-FFICallsPresenter class >> defaultSpec [
+TFLCallsPresenter class >> defaultSpec [
 
 	^ SpBoxLayout newVertical
 		add: #toolbar expand: false;
@@ -25,7 +25,7 @@ FFICallsPresenter class >> defaultSpec [
 ]
 
 { #category : #initialization }
-FFICallsPresenter >> initializeColumns [
+TFLCallsPresenter >> initializeColumns [
 
 	table
 		addColumn: ((SpStringTableColumn
@@ -70,39 +70,52 @@ FFICallsPresenter >> initializeColumns [
 ]
 
 { #category : #initialization }
-FFICallsPresenter >> initializeContextMenu [
+TFLCallsPresenter >> initializeContextMenu [
 
 	table contextMenu: [
 		| selectedSignal |
 		selectedSignal := table selectedItem.
 		
-		SpMenuPresenter new 
+		(self instantiate: SpMenuPresenter)
 			addItem: [ :item |
 				item
 					name: 'Inspect signal';
 					action: [ selectedSignal inspect ] ];
-			addItem: [ :item |
-				item
-					name: 'Add as ignored function';
-					action: [ 
-						logger addIgnoreRule: [ :signal | signal functionName = selectedSignal functionName ] ] ];
-			addItem: [ :item |
-				item
-					name: 'Add as ignored module';
-					action: [ 
-						logger addIgnoreRule: [ :signal | signal moduleName = selectedSignal moduleName ] ] ];
-			addItem: [ :item |
-				item
-					name: 'Add as ignored process';
-					action: [ 
-						logger addIgnoreRule: [ :signal | signal processId = selectedSignal processId ] ] ];
+			addGroup: [ :aGroup |
+				aGroup
+					addItem: [ :item |
+						item
+							name: ('Don''t record calls to "{1}" function' format: { selectedSignal functionName });
+							action: [ logger addFilter: #functionName equals: selectedSignal functionName ] ];
+					addItem: [ :item |
+						item
+							name: ('Don''t record calls to "{1}" module' format: { selectedSignal moduleName });
+							action: [ logger addFilter: #moduleName equals: selectedSignal moduleName ] ];
+					addItem: [ :item |
+						item
+							name: ('Don''t record calls to "{1}" process' format: { selectedSignal processId });
+							action: [ logger addFilter: #processId equals: selectedSignal processId ] ] ];
+			addGroup: [ :aGroup |
+				aGroup
+					addItem: [ :item |
+						item
+							name: ('Only record calls to "{1}" function' format: { selectedSignal functionName });
+							action: [ logger addFilter: #functionName equals: selectedSignal functionName ] ];
+					addItem: [ :item |
+						item
+							name: ('Only record calls to "{1}" module' format: { selectedSignal moduleName });
+							action: [ logger addFilter: #moduleName equals: selectedSignal moduleName ] ];
+					addItem: [ :item |
+						item
+							name: ('Only record calls to "{1}" process' format: { selectedSignal processId });
+							action: [ logger addFilter: #processId equals: selectedSignal processId ] ] ];
 			yourself
 
 		] 
 ]
 
 { #category : #initialization }
-FFICallsPresenter >> initializePresenters [ 
+TFLCallsPresenter >> initializePresenters [ 
 	"We assume the logger was set previously."
 
 	toolbar := self newToolbar.
@@ -118,7 +131,7 @@ FFICallsPresenter >> initializePresenters [
 ]
 
 { #category : #initialization }
-FFICallsPresenter >> initializeToolbar [
+TFLCallsPresenter >> initializeToolbar [
 
 	toolbar
 		addItem: (startButton := SpToolbarButtonPresenter new
@@ -139,7 +152,7 @@ FFICallsPresenter >> initializeToolbar [
 ]
 
 { #category : #accessing }
-FFICallsPresenter >> refresh [
+TFLCallsPresenter >> refresh [
 
 	table items: logger recordings reverse.
 	startButton enabled: logger isRunning not.
@@ -148,7 +161,7 @@ FFICallsPresenter >> refresh [
 ]
 
 { #category : #initialization }
-FFICallsPresenter >> setModelBeforeInitialization: aLogger [
+TFLCallsPresenter >> setModelBeforeInitialization: aLogger [
 
 	logger := aLogger.
 

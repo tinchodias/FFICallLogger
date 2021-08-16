@@ -32,7 +32,7 @@ Class {
 		'processName',
 		'valuable'
 	],
-	#category : #'FFICallLogger-Utils'
+	#category : #'FFICallLogger-UI-Utils'
 }
 
 { #category : #initialization }

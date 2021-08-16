@@ -1,11 +1,13 @@
 "
-I'm a Beacon signal with information about a FFI call that was just executed.
+I'm a Beacon signal with information about a ThreadedFFI call that was just executed.
 
-The FFICallLogger can record my emission (#emit).
+A started `TFLCallLogger instance` records me. Browse its class comment for more information.
+
+My instances have two states: ""initialized"" and ""prepared"". The method ""prepareAsRecording"" mutates an instance as a kind of snapshot, so posterior modifications on the original FFI call object are not lost. This is a performance optimization, to avoid preparing instances that are filtered.
 
 "
 Class {
-	#name : #FFICallSignal,
+	#name : #TFLSignal,
 	#superclass : #BeaconSignal,
 	#instVars : [
 		'arguments',
@@ -17,7 +19,7 @@ Class {
 }
 
 { #category : #'instance creation' }
-FFICallSignal class >> function: aFunction arguments: aCollection answer: anObject [
+TFLSignal class >> function: aFunction arguments: aCollection answer: anObject [
 
 	^ self basicNew
 		  initializeWithFunction: aFunction
@@ -27,25 +29,25 @@ FFICallSignal class >> function: aFunction arguments: aCollection answer: anObje
 ]
 
 { #category : #accessing }
-FFICallSignal >> answer [
+TFLSignal >> answer [
 
 	^ answer
 ]
 
 { #category : #accessing }
-FFICallSignal >> arguments [
+TFLSignal >> arguments [
 
 	^ arguments
 ]
 
 { #category : #accessing }
-FFICallSignal >> functionName [
+TFLSignal >> functionName [
 
 	^ functionName
 ]
 
 { #category : #initialization }
-FFICallSignal >> initializeWithFunction: aFunction arguments: aCollection answer: anObject [
+TFLSignal >> initializeWithFunction: aFunction arguments: aCollection answer: anObject [
 
 	self initialize.
 	moduleName := aFunction moduleName.
@@ -55,19 +57,19 @@ FFICallSignal >> initializeWithFunction: aFunction arguments: aCollection answer
 ]
 
 { #category : #accessing }
-FFICallSignal >> moduleName [
+TFLSignal >> moduleName [
 
 	^ moduleName
 ]
 
 { #category : #accessing }
-FFICallSignal >> name [
+TFLSignal >> name [
 
 	^ 'FFI Call'
 ]
 
 { #category : #accessing }
-FFICallSignal >> prepareAsRecording [
+TFLSignal >> prepareAsRecording [
 	"Copy collaborators as an 'immutable' objects."
 
 	arguments := arguments collect: [ :each | each asFFILoggerRecording ].
@@ -77,7 +79,7 @@ FFICallSignal >> prepareAsRecording [
 ]
 
 { #category : #printing }
-FFICallSignal >> printOneLineContentsOn: stream [
+TFLSignal >> printOneLineContentsOn: stream [
 	
 	functionName printOn: stream.
 

@@ -3,14 +3,14 @@ I represent a a picture or snapshot of an ExternalAddress.
 
 "
 Class {
-	#name : #FFICallLoggerAddress,
+	#name : #TFLAddress,
 	#superclass : #ByteArray,
 	#type : #bytes,
-	#category : #'FFICallLogger-Core'
+	#category : #'FFICallLogger-Recordings'
 }
 
 { #category : #'instance creation' }
-FFICallLoggerAddress class >> newFrom: anExternalAddress [
+TFLAddress class >> newFrom: anExternalAddress [
 
 	| sz |
 	sz := anExternalAddress size.
@@ -20,7 +20,7 @@ FFICallLoggerAddress class >> newFrom: anExternalAddress [
 ]
 
 { #category : #printing }
-FFICallLoggerAddress >> printOn: aStream [
+TFLAddress >> printOn: aStream [
 	"Answer a lowercase hexadecimal String representation of the receiver prefixed by @."
 
 	aStream nextPutAll: '@'.
