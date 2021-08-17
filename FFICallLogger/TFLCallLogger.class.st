@@ -39,7 +39,8 @@ TFLCallLogger class >> install [
 	(TFLSignal
 		function: function
 		arguments: aCollection
-		answer: (answer == self ifTrue: [ nil ] ifFalse: [ answer ])) emit.
+		answer: (answer == self ifTrue: [ nil ] ifFalse: [ answer ])
+		sender: thisContext sender sender) emit.
 	^ answer'
 
 ]
