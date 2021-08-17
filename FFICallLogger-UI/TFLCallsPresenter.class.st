@@ -26,6 +26,17 @@ TFLCallsPresenter class >> defaultSpec [
 		yourself
 ]
 
+{ #category : #actions }
+TFLCallsPresenter >> doExportTable [
+			
+	| target |
+	target := 'recordings.csv' asFileReference nextVersion.
+	
+	SpTable2CSVExporter new export: table to: target.
+	
+	self inform: 'Exported filters to ', target fullName.
+]
+
 { #category : #initialization }
 TFLCallsPresenter >> initializeColumns [
 
@@ -172,8 +183,12 @@ TFLCallsPresenter >> initializeToolbar [
 			label: 'Install on TF';
 			icon: (self iconNamed: #down);
 			action: [ TFLCallLogger install ];
+			yourself);
+		addItemRight: (SpToolbarButtonPresenter new
+			label: 'Export CSV';
+			icon: (self iconNamed: #smallSave);
+			action: [ self doExportTable ];
 			yourself)
-
 ]
 
 { #category : #accessing }
@@ -183,6 +198,12 @@ TFLCallsPresenter >> refresh [
 
 	startButton enabled: logger isRunning not.
 	stopButton enabled: logger isRunning.
+
+	self refreshStatusBar
+]
+
+{ #category : #accessing }
+TFLCallsPresenter >> refreshStatusBar [
 
 	statusBar pushMessage: self statusBarMessage
 ]
@@ -208,7 +229,44 @@ TFLCallsPresenter >> setModelBeforeInitialization: aLogger [
 { #category : #accessing }
 TFLCallsPresenter >> statusBarMessage [
 
-	^ 'Recordings: {1} - Filtered: {2}' format: {
-		logger recordings size.
-		logger numberOfFilteredSignals }
+	^ String streamContents: [ :stream |
+		stream
+			nextPutAll: '[LOG] Recordings: ';
+			print: logger recordings size.
+		
+		stream
+			nextPutAll: '; filtered: ';
+			print: logger numberOfFilteredSignals.
+
+		logger recordings ifNotEmpty: [ :rs |
+			| duration |
+			duration := rs last timestamp - rs first timestamp.
+			stream
+				nextPutAll: '; interval: ';
+				print: duration asSeconds;
+				nextPut: $s.
+
+			table selectedItem ifNotNil: [ :signal |
+				| count |
+				count := rs count: [ :each | each functionName = signal functionName ].
+				stream nextPutAll: ((' | [SELECTION] Recordings with same function: {1} ({2}%)') format: {
+					count.
+					(count / rs size * 100) asInteger
+					}).
+
+				count := rs count: [ :each | each moduleName = signal moduleName ].
+				stream nextPutAll: (('; same module: {1} ({2}%)') format: {
+					count.
+					(count / rs size * 100) asInteger
+					}).
+
+				count := rs count: [ :each | each processId = signal processId ].
+				stream nextPutAll: (('; same process: {1} ({2}%)') format: {
+					count.
+					(count / rs size * 100) asInteger
+					})
+
+				]
+			].
+		]
 ]
