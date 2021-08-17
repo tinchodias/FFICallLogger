@@ -62,14 +62,14 @@ TFLCallsPresenter >> initializeColumns [
 			width: 70;
 			yourself);
 		addColumn: ((SpStringTableColumn
-			title: 'Answer'
-			evaluated: [ :each | String streamContents: [ :s | each answer printOn: s ] ])
-			width: 70;
-			yourself);
-		addColumn: ((SpStringTableColumn
 			title: 'Function'
 			evaluated: [ :each | each functionName ])
 			width: 150;
+			yourself);
+		addColumn: ((SpStringTableColumn
+			title: 'Answer'
+			evaluated: [ :each | each answer asString ])
+			width: 70;
 			yourself);
 		addColumn: (SpStringTableColumn
 			title: 'Arguments'
@@ -129,15 +129,15 @@ TFLCallsPresenter >> initializeContextMenu [
 					addItem: [ :item |
 						item
 							name: ('Only record calls to "{1}" function' format: { selectedSignal functionName });
-							action: [ logger addFilter: #functionName equals: selectedSignal functionName ] ];
+							action: [ logger addFilter: #functionName deny: selectedSignal functionName ] ];
 					addItem: [ :item |
 						item
 							name: ('Only record calls to "{1}" module' format: { selectedSignal moduleName });
-							action: [ logger addFilter: #moduleName equals: selectedSignal moduleName ] ];
+							action: [ logger addFilter: #moduleName deny: selectedSignal moduleName ] ];
 					addItem: [ :item |
 						item
 							name: ('Only record calls from "{1}" process' format: { selectedSignal processId });
-							action: [ logger addFilter: #processId equals: selectedSignal processId ] ] ]
+							action: [ logger addFilter: #processId deny: selectedSignal processId ] ] ]
 
 			] 
 ]

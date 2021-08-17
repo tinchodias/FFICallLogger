@@ -96,12 +96,12 @@ TFLFiltersPresenter >> initializeToolbar [
 			action: [ self openAddFilterDialog ];
 			yourself);
 		addItemRight: (SpToolbarButtonPresenter new
-			label: 'Fuel out';
+			label: 'Export Fuel';
 			icon: (self iconNamed: #smallSave);
 			action: [ self doFuelOut ];
 			yourself);
 		addItemRight: (SpToolbarButtonPresenter new
-			label: 'Fuel in';
+			label: 'Import Fuel';
 			icon: (self iconNamed: #smallSave);
 			action: [ self openFuelInDialog ];
 			yourself).
