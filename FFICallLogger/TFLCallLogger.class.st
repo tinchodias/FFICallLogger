@@ -105,6 +105,13 @@ TFLCallLogger >> announceChanged [
 	self announcer announce: (ValueChanged newValue: self)
 ]
 
+{ #category : #initialization }
+TFLCallLogger >> basicReset [
+
+	super basicReset.
+	self resetFilteredSignals
+]
+
 { #category : #accessing }
 TFLCallLogger >> filters [
 
@@ -116,6 +123,7 @@ TFLCallLogger >> initialize [
 
 	super initialize.
 	self resetFilters.
+	self resetFilteredSignals.
 ]
 
 { #category : #accessing }
@@ -123,8 +131,18 @@ TFLCallLogger >> nextPut: aFFICallSignal [
 
 	aFFICallSignal prepareAsRecording. "TODO: argument filtering need to prepare not-lazily"
 
-	(self shouldRecord: aFFICallSignal) ifFalse: [ ^ self  ].
-	super nextPut: aFFICallSignal 
+	(self shouldRecord: aFFICallSignal)
+		ifTrue: [ super nextPut: aFFICallSignal ]
+		ifFalse: [
+			numberOfFilteredSignals := numberOfFilteredSignals + 1.
+			self announceChanged ]
+
+]
+
+{ #category : #accessing }
+TFLCallLogger >> numberOfFilteredSignals [
+
+	^ numberOfFilteredSignals
 ]
 
 { #category : #accessing }
@@ -133,6 +151,12 @@ TFLCallLogger >> removeFilter: aUnaryBlockClosure [
 
 	filters := filters copyWithout: aUnaryBlockClosure.
 	self announceChanged.
+]
+
+{ #category : #initialization }
+TFLCallLogger >> resetFilteredSignals [
+
+	numberOfFilteredSignals := 0.
 ]
 
 { #category : #accessing }
