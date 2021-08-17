@@ -71,6 +71,12 @@ TFLSignal >> name [
 	^ 'FFI Call'
 ]
 
+{ #category : #printing }
+TFLSignal >> oneLineContents [
+
+	^ String streamContents: [ :s | self printOneLineContentsOn: s ]
+]
+
 { #category : #accessing }
 TFLSignal >> prepareAsRecording [
 	"Copy collaborators as an 'immutable' objects."
@@ -80,9 +86,13 @@ TFLSignal >> prepareAsRecording [
 ]
 
 { #category : #printing }
-TFLSignal >> printOneLineContentsOn: stream [
-	
-	functionName printOn: stream.
+TFLSignal >> printOneLineContentsOn: aStream [
+
+	aStream
+		nextPutAll: functionName;
+		nextPut: $(;
+		nextPutAll: arguments asCommaString;
+		nextPut: $)
 
 ]
 

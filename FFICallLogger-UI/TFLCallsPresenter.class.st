@@ -10,7 +10,8 @@ Class {
 		'logger',
 		'toolbar',
 		'startButton',
-		'stopButton'
+		'stopButton',
+		'statusBar'
 	],
 	#category : #'FFICallLogger-UI-Core'
 }
@@ -58,15 +59,10 @@ TFLCallsPresenter >> initializeColumns [
 			evaluated: [ :each | each functionName ])
 			width: 150;
 			yourself);
-		addColumn: ((SpStringTableColumn
+		addColumn: (SpStringTableColumn
 			title: 'Arguments'
-			evaluated: [ :each |
-				String streamContents: [:s |
-					each arguments
-						do: [:address | address printOn: s ]
-						separatedBy: [ s nextPutAll: ', ' ] ] ])
-			yourself).
-		
+			evaluated: [ :each | each arguments asCommaString ]).
+
 ]
 
 { #category : #initialization }
