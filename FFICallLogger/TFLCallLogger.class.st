@@ -19,7 +19,8 @@ Class {
 	#name : #TFLCallLogger,
 	#superclass : #CircularMemoryLogger,
 	#instVars : [
-		'filters'
+		'filters',
+		'numberOfFilteredSignals'
 	],
 	#category : #'FFICallLogger-Core'
 }
@@ -148,7 +149,9 @@ TFLCallLogger >> shouldRecord: aSignal [
 		[ each value: aSignal ] onErrorDo: [ :error |
 			"We assume remove implementation support doing it from a iteration block"
 			self removeFilter: each. 
-			('Removed filter due to error: ', error asString) traceCr ] ]
+			('Removed filter due to error: ', error asString) traceCr.
+			true ] ]
+
 ]
 
 { #category : #accessing }
