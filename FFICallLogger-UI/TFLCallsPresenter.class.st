@@ -22,6 +22,7 @@ TFLCallsPresenter class >> defaultSpec [
 	^ SpBoxLayout newVertical
 		add: #toolbar expand: false;
 		add: #table;
+		add: #statusBar expand: false;
 		yourself
 ]
 
@@ -130,6 +131,8 @@ TFLCallsPresenter >> initializePresenters [
 	toolbar := self newToolbar.
 	self initializeToolbar.
 
+	statusBar := self newStatusBar.
+
 	table := self newTable.
 	self initializeColumns.
 	self initializeContextMenu.
@@ -164,9 +167,11 @@ TFLCallsPresenter >> initializeToolbar [
 TFLCallsPresenter >> refresh [
 
 	table items: logger recordings reverse.
+
 	startButton enabled: logger isRunning not.
 	stopButton enabled: logger isRunning.
 
+	statusBar pushMessage: self statusBarMessage
 ]
 
 { #category : #initialization }
@@ -185,4 +190,12 @@ TFLCallsPresenter >> setModelBeforeInitialization: aLogger [
 		send: #schedule
 		to: refreshDeferrer
 
+]
+
+{ #category : #accessing }
+TFLCallsPresenter >> statusBarMessage [
+
+	^ 'Recordings: {1} - Filtered: {2}' format: {
+		logger recordings size.
+		logger numberOfFilteredSignals }
 ]
