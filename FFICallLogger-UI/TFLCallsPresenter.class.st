@@ -167,7 +167,13 @@ TFLCallsPresenter >> initializeToolbar [
 			label: 'Clear calls';
 			icon: (self iconNamed: #refresh);
 			action: [ logger reset ];
+			yourself);
+		addItemRight: (SpToolbarButtonPresenter new
+			label: 'Install on TF';
+			icon: (self iconNamed: #down);
+			action: [ TFLCallLogger install ];
 			yourself)
+
 ]
 
 { #category : #accessing }

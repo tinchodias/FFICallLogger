@@ -13,6 +13,7 @@ I'm a logger for ThreadedFFI ""same thread"" calls.
 	TFLCallLogger start.
 	TFLCallLogger stop.
 	TFLCallLogger resetInstance.
+	TFLCallLogger instance filters fuelOut.
 
 "
 Class {
@@ -125,6 +126,12 @@ TFLCallLogger >> basicReset [
 TFLCallLogger >> filters [
 
 	^ filters
+]
+
+{ #category : #accessing }
+TFLCallLogger >> filters: aCollection [
+
+	filters := aCollection
 ]
 
 { #category : #initialization }

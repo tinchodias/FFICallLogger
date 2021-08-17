@@ -84,7 +84,18 @@ TFLFiltersPresenter >> initializeToolbar [
 			label: 'Add';
 			icon: (self iconNamed: #smallAdd);
 			action: [ self openAddFilterDialog ];
-			yourself)
+			yourself);
+		addItemRight: (SpToolbarButtonPresenter new
+			label: 'Fuel out';
+			icon: (self iconNamed: #smallSave);
+			action: [ logger filters fuelOut ];
+			yourself);
+		addItemRight: (SpToolbarButtonPresenter new
+			label: 'Fuel in';
+			icon: (self iconNamed: #smallSave);
+			action: [ self openFuelInDialog ];
+			yourself).
+
 ]
 
 { #category : #actions }
@@ -103,6 +114,15 @@ TFLFiltersPresenter >> openEditFilterDialogFor: aFilter [
 		logger
 			addFilterByCompiling: newBody;
 			removeFilter: aFilter ]
+]
+
+{ #category : #initialization }
+TFLFiltersPresenter >> openFuelInDialog [
+
+	| fileReferenceOrNil |
+	fileReferenceOrNil := self application selectFileTitle: 'Select the fuel file'.
+	fileReferenceOrNil ifNil: [ ^ self ].
+	logger filters: (FLMaterializer materializeFromFileNamed: fileReferenceOrNil pathString).
 ]
 
 { #category : #accessing }
