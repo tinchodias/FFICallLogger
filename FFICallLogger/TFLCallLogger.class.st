@@ -131,7 +131,8 @@ TFLCallLogger >> filters [
 { #category : #accessing }
 TFLCallLogger >> filters: aCollection [
 
-	filters := aCollection
+	filters := aCollection.
+	self announceChanged.
 ]
 
 { #category : #initialization }

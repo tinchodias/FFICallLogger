@@ -29,6 +29,16 @@ TFLFiltersPresenter >> bodyFor: aBlockClosure [
 	^ aBlockClosure sourceNode body sourceCode	
 ]
 
+{ #category : #actions }
+TFLFiltersPresenter >> doFuelOut [
+
+	| target |
+	target := 'filters.fuel' asFileReference.
+	target := target nextVersion fullName.
+	logger filters serializeToFileNamed: target.
+	self inform: 'Exported filters to ', target.
+]
+
 { #category : #initialization }
 TFLFiltersPresenter >> initializeContextMenu [
 
@@ -88,7 +98,7 @@ TFLFiltersPresenter >> initializeToolbar [
 		addItemRight: (SpToolbarButtonPresenter new
 			label: 'Fuel out';
 			icon: (self iconNamed: #smallSave);
-			action: [ logger filters fuelOut ];
+			action: [ self doFuelOut ];
 			yourself);
 		addItemRight: (SpToolbarButtonPresenter new
 			label: 'Fuel in';
@@ -116,7 +126,7 @@ TFLFiltersPresenter >> openEditFilterDialogFor: aFilter [
 			removeFilter: aFilter ]
 ]
 
-{ #category : #initialization }
+{ #category : #actions }
 TFLFiltersPresenter >> openFuelInDialog [
 
 	| fileReferenceOrNil |
