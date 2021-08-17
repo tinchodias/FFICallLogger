@@ -99,6 +99,14 @@ TFLCallLogger >> addFilterHasArgumentLike: value [
 	self addFilterByCompiling: body
 ]
 
+{ #category : #convenience }
+TFLCallLogger >> addFilterSignalsLike: aTFLSignal [ 
+	
+	| body |
+	body := 'signal oneLineContents = {1}' format: { aTFLSignal oneLineContents storeString }.
+	self addFilterByCompiling: body
+]
+
 { #category : #private }
 TFLCallLogger >> announceChanged [
 

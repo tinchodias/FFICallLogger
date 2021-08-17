@@ -86,6 +86,13 @@ TFLCallsPresenter >> initializeContextMenu [
 				aGroup
 					addItem: [ :item |
 						item
+							name: ('Don''t record calls with same function and arguments');
+							action: [ logger addFilterSignalsLike: selectedSignal ] ].
+
+
+				aGroup
+					addItem: [ :item |
+						item
 							name: ('Don''t record calls to "{1}" function' format: { selectedSignal functionName });
 							action: [ logger addFilter: #functionName equals: selectedSignal functionName ] ];
 					addItem: [ :item |
@@ -94,7 +101,7 @@ TFLCallsPresenter >> initializeContextMenu [
 							action: [ logger addFilter: #moduleName equals: selectedSignal moduleName ] ];
 					addItem: [ :item |
 						item
-							name: ('Don''t record calls to "{1}" process' format: { selectedSignal processId });
+							name: ('Don''t record calls from "{1}" process' format: { selectedSignal processId });
 							action: [ logger addFilter: #processId equals: selectedSignal processId ] ].
 						
 				selectedSignal arguments do: [ :each |
@@ -118,7 +125,7 @@ TFLCallsPresenter >> initializeContextMenu [
 							action: [ logger addFilter: #moduleName equals: selectedSignal moduleName ] ];
 					addItem: [ :item |
 						item
-							name: ('Only record calls to "{1}" process' format: { selectedSignal processId });
+							name: ('Only record calls from "{1}" process' format: { selectedSignal processId });
 							action: [ logger addFilter: #processId equals: selectedSignal processId ] ] ]
 
 			] 
