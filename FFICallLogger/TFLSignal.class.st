@@ -52,7 +52,7 @@ TFLSignal >> functionName [
 TFLSignal >> initializeWithFunction: aFunction arguments: aCollection answer: anObject sender: aCompiledMethod [
 
 	self initialize.
-	moduleName := aFunction moduleName.
+	moduleName := aFunction moduleName asPath basename.
 	functionName := aFunction functionName.
 	arguments := aCollection.
 	answer := anObject.
