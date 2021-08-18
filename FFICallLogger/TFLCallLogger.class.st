@@ -40,7 +40,7 @@ TFLCallLogger class >> install [
 		function: function
 		arguments: aCollection
 		answer: (answer == self ifTrue: [ nil ] ifFalse: [ answer ])
-		sender: thisContext sender sender method) emit.
+		stack: (thisContext stack allButFirst: 2)) emit.
 	^ answer'
 
 ]

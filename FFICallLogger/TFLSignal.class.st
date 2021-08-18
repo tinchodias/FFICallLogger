@@ -14,19 +14,19 @@ Class {
 		'answer',
 		'moduleName',
 		'functionName',
-		'sender'
+		'stack'
 	],
 	#category : #'FFICallLogger-Core'
 }
 
 { #category : #'instance creation' }
-TFLSignal class >> function: aFunction arguments: aCollection answer: anObject sender: aCompiledMethod [
+TFLSignal class >> function: aFunction arguments: aCollection answer: anObject stack: anArrayOfContexts [
 
 	^ self basicNew
 		  initializeWithFunction: aFunction
 		  arguments: aCollection
 		  answer: anObject
-		  sender: aCompiledMethod;
+		  stack: anArrayOfContexts;
 		  yourself
 ]
 
@@ -49,14 +49,14 @@ TFLSignal >> functionName [
 ]
 
 { #category : #initialization }
-TFLSignal >> initializeWithFunction: aFunction arguments: aCollection answer: anObject sender: aCompiledMethod [
+TFLSignal >> initializeWithFunction: aFunction arguments: aCollection answer: anObject stack: anArrayOfContexts [
 
 	self initialize.
 	moduleName := aFunction moduleName asPath basename.
 	functionName := aFunction functionName.
 	arguments := aCollection.
 	answer := anObject.
-	sender := aCompiledMethod.
+	stack := anArrayOfContexts
 ]
 
 { #category : #accessing }
@@ -103,6 +103,7 @@ TFLSignal >> printOneLineContentsOn: aStream [
 
 { #category : #accessing }
 TFLSignal >> sender [
+	"Answer the CompiledMethod that performed the call."
 
-	^ sender
+	^ stack first method
 ]
