@@ -5,13 +5,12 @@ Class {
 	#name : #TFLCallsPresenter,
 	#superclass : #SpPresenter,
 	#instVars : [
-		'table',
 		'refreshDeferrer',
 		'logger',
 		'toolbar',
-		'startButton',
-		'stopButton',
-		'statusBar'
+		'statusBar',
+		'callsTable',
+		'stackList'
 	],
 	#category : #'FFICallLogger-UI-Core'
 }
@@ -20,10 +19,14 @@ Class {
 TFLCallsPresenter class >> defaultSpec [
 
 	^ SpBoxLayout newVertical
-		add: #toolbar expand: false;
-		add: #table;
-		add: #statusBar expand: false;
-		yourself
+		  add: #toolbar expand: false;
+		  add: (SpPanedLayout newHorizontal
+				   positionOfSlider: 65 percent;
+				   add: #callsTable;
+				   add: #stackList;
+				   yourself);
+		  add: #statusBar expand: false;
+		  yourself
 ]
 
 { #category : #actions }
@@ -32,7 +35,7 @@ TFLCallsPresenter >> doExportTableAsCsv [
 	| target |
 	target := 'recordings.csv' asFileReference nextVersion.
 	
-	SpTable2CSVExporter new export: table to: target.
+	SpTable2CSVExporter new export: callsTable to: target.
 	
 	self inform: 'Exported to ', target fullName.
 ]
@@ -43,7 +46,7 @@ TFLCallsPresenter >> doExportTableAsTxt [
 	| target |
 	target := 'recordings.txt' asFileReference nextVersion.
 	
-	SpTable2TXTExporter new export: table to: target.
+	SpTable2TXTExporter new export: callsTable to: target.
 	
 	self inform: 'Exported to ', target fullName.
 ]
@@ -51,7 +54,7 @@ TFLCallsPresenter >> doExportTableAsTxt [
 { #category : #initialization }
 TFLCallsPresenter >> initializeColumns [
 
-	table
+	callsTable
 		addColumn: ((SpStringTableColumn
 			title: 'Date'
 			evaluated: [ :each | each timestamp asDate ddmmyyyy ])
@@ -91,9 +94,9 @@ TFLCallsPresenter >> initializeColumns [
 { #category : #initialization }
 TFLCallsPresenter >> initializeContextMenu [
 
-	table contextMenu: [
+	callsTable contextMenu: [
 		| selectedSignal |
-		selectedSignal := table selectedItem.
+		selectedSignal := callsTable selectedItem.
 		
 		(self instantiate: SpMenuPresenter)
 			addItem: [ :item |
@@ -162,12 +165,21 @@ TFLCallsPresenter >> initializePresenters [
 
 	statusBar := self newStatusBar.
 
-	table := self newTable.
+	stackList := self newList
+"		display: [:each | each ];"
+		whenActivatedDo: [ :selection |
+			selection selectedItem inspect ];
+		yourself.
+	
+	callsTable := self newTable.
 	self initializeColumns.
 	self initializeContextMenu.
-	table
-		whenSelectionChangedDo: [ self refreshStatusBar ];
-		whenActivatedDo: [ :selection | selection selectedItem inspect ].
+	callsTable
+		whenSelectionChangedDo: [
+			self refreshStackList.
+			self refreshStatusBar ];
+		whenActivatedDo: [ :selection |
+			selection selectedItem inspect ].
 	
 	"Trigger initial refresh"
 	refreshDeferrer schedule.
@@ -178,25 +190,10 @@ TFLCallsPresenter >> initializePresenters [
 TFLCallsPresenter >> initializeToolbar [
 
 	toolbar
-		addItem: (startButton := SpToolbarButtonPresenter new
-			label: 'Start';
-			icon: (self iconNamed: #smallOk);
-			action: [ logger start ];
-			yourself);
-		addItem: (stopButton := SpToolbarButtonPresenter new
-			label: 'Stop';
-			icon: (self iconNamed: #smallCancel);
-			action: [ logger stop ];
-			yourself);
 		addItem: (SpToolbarButtonPresenter new
 			label: 'Clear calls';
 			icon: (self iconNamed: #refresh);
 			action: [ logger reset ];
-			yourself);
-		addItemRight: (SpToolbarButtonPresenter new
-			label: 'Install on TF';
-			icon: (self iconNamed: #down);
-			action: [ TFLCallLogger install ];
 			yourself);
 		addItemRight: (SpToolbarButtonPresenter new
 			label: 'Export CSV';
@@ -213,12 +210,21 @@ TFLCallsPresenter >> initializeToolbar [
 { #category : #accessing }
 TFLCallsPresenter >> refresh [
 
-	table items: logger recordings reverse.
+	callsTable items: logger recordings.
 
-	startButton enabled: logger isRunning not.
-	stopButton enabled: logger isRunning.
+	self
+		refreshStackList;
+		refreshStatusBar
 
-	self refreshStatusBar
+]
+
+{ #category : #accessing }
+TFLCallsPresenter >> refreshStackList [
+
+	stackList items: (callsTable selectedItem
+		ifNil: [ #() ]
+		ifNotNil: [ :aSignal | aSignal stack ])
+
 ]
 
 { #category : #accessing }
@@ -265,7 +271,7 @@ TFLCallsPresenter >> statusBarMessage [
 				print: duration asSeconds;
 				nextPut: $s.
 
-			table selectedItem ifNotNil: [ :signal |
+			callsTable selectedItem ifNotNil: [ :signal |
 				| count |
 				count := rs count: [ :each | each functionName = signal functionName ].
 				stream nextPutAll: ((' | [SELECTION] Recordings with same function: {1} ({2}%)') format: {

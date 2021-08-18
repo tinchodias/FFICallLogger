@@ -8,8 +8,10 @@ Class {
 		'refreshDeferrer',
 		'logger',
 		'toolbar',
-		'list',
-		'clearButton'
+		'clearButton',
+		'startButton',
+		'stopButton',
+		'filtersList'
 	],
 	#category : #'FFICallLogger-UI-Core'
 }
@@ -19,7 +21,7 @@ TFLFiltersPresenter class >> defaultSpec [
 
 	^ SpBoxLayout newVertical
 		add: #toolbar expand: false;
-		add: #list;
+		add: #filtersList;
 		yourself
 ]
 
@@ -42,11 +44,11 @@ TFLFiltersPresenter >> doFuelOut [
 { #category : #initialization }
 TFLFiltersPresenter >> initializeContextMenu [
 
-	list contextMenu: [
+	filtersList contextMenu: [
 		| selectedFilter |
-		selectedFilter := list selectedItem.
+		selectedFilter := filtersList selectedItem.
 		
-		SpMenuPresenter new 
+		(self instantiate: SpMenuPresenter)
 			addItem: [ :item |
 				item
 					name: 'Inspect';
@@ -70,9 +72,10 @@ TFLFiltersPresenter >> initializePresenters [
 	toolbar := self newToolbar.
 	self initializeToolbar.
 
-	list := self newList
+	filtersList := self newList
 		display: [ :each | self bodyFor: each ];
-		whenActivatedDo: [ :selection | self openEditFilterDialogFor: list selectedItem ];
+		whenActivatedDo: [ :selection |
+			self openEditFilterDialogFor: selection selectedItem ];
 		yourself.
 	self initializeContextMenu.
 	
@@ -85,15 +88,30 @@ TFLFiltersPresenter >> initializePresenters [
 TFLFiltersPresenter >> initializeToolbar [
 
 	toolbar
+		addItem: (startButton := SpToolbarButtonPresenter new
+			label: 'Start';
+			icon: (self iconNamed: #smallOk);
+			action: [ logger start ];
+			yourself);
+		addItem: (stopButton := SpToolbarButtonPresenter new
+			label: 'Stop';
+			icon: (self iconNamed: #smallCancel);
+			action: [ logger stop ];
+			yourself);
 		addItem: (clearButton := SpToolbarButtonPresenter new
 			label: 'Clear';
 			icon: (self iconNamed: #refresh);
 			action: [ logger resetFilters ];
 			yourself);
 		addItem: (SpToolbarButtonPresenter new
-			label: 'Add';
+			label: 'Add Filter';
 			icon: (self iconNamed: #smallAdd);
 			action: [ self openAddFilterDialog ];
+			yourself);
+		addItemRight: (SpToolbarButtonPresenter new
+			label: 'Install on TF';
+			icon: (self iconNamed: #down);
+			action: [ TFLCallLogger install ];
 			yourself);
 		addItemRight: (SpToolbarButtonPresenter new
 			label: 'Export Fuel';
@@ -138,7 +156,10 @@ TFLFiltersPresenter >> openFuelInDialog [
 { #category : #accessing }
 TFLFiltersPresenter >> refresh [
 
-	list items: logger filters.
+	startButton enabled: logger isRunning not.
+	stopButton enabled: logger isRunning.
+
+	filtersList items: logger filters.
 	clearButton enabled: logger filters isNotEmpty
 ]
 

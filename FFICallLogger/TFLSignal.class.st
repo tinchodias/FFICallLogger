@@ -119,3 +119,9 @@ TFLSignal >> sender [
 
 	^ stack first method
 ]
+
+{ #category : #accessing }
+TFLSignal >> stack [
+
+	^ stack
+]
