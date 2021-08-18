@@ -36,11 +36,7 @@ TFLCallLogger class >> install [
 	| answer |
 	function validate.
 	answer := self invokeFunction: function withArguments: aCollection.
-	(TFLSignal
-		function: function
-		arguments: aCollection
-		answer: (answer == self ifTrue: [ nil ] ifFalse: [ answer ])
-		stack: (thisContext stack allButFirst: 2)) emit.
+	TFLSignal emitFromCall: self arguments: aCollection answer: answer.
 	^ answer'
 
 ]

@@ -19,6 +19,18 @@ Class {
 	#category : #'FFICallLogger-Core'
 }
 
+{ #category : #convenience }
+TFLSignal class >> emitFromCall: aTFSameThreadCall arguments: aCollection answer: answer [
+	"Convenience method that creates and emits an instance of this class.
+	IMPORTANT: it assumes it's sent from TFSameThreadCall>>#executeOn:withArguments:."
+
+	(self
+		function: aTFSameThreadCall function
+		arguments: aCollection
+		answer: (answer == aTFSameThreadCall ifTrue: [ nil ] ifFalse: [ answer ])
+		stack: (thisContext stack allButFirst: 3)) emit.
+]
+
 { #category : #'instance creation' }
 TFLSignal class >> function: aFunction arguments: aCollection answer: anObject stack: anArrayOfContexts [
 
