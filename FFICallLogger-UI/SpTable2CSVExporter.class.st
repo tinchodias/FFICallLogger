@@ -1,29 +1,18 @@
 Class {
 	#name : #SpTable2CSVExporter,
-	#superclass : #Object,
+	#superclass : #SpTableExporter,
 	#category : #'FFICallLogger-UI-Utils'
 }
 
 { #category : #public }
-SpTable2CSVExporter >> export: aSpTablePresenter on: stream [
+SpTable2CSVExporter >> export: aSpTablePresenter on: stream item: anObject [ 
 
-	aSpTablePresenter items do: [ :eachSignal |
-		aSpTablePresenter columns
-			do: [ :eachColumn |
-				stream
-					nextPut: $";
-					nextPutAll: ((eachColumn readObject: eachSignal) copyWithout: $");
-					nextPut: $" ]
-			separatedBy: [ stream << ', ' ].
-		stream crlf ]
+	aSpTablePresenter columns
+		do: [ :eachColumn |
+			stream
+				nextPut: $";
+				nextPutAll: ((eachColumn readObject: anObject) copyWithout: $");
+				nextPut: $" ]
+		separatedBy: [ stream << ', ' ]
 
-]
-
-{ #category : #public }
-SpTable2CSVExporter >> export: aSpTablePresenter to: aFileReference [
-
-	aFileReference
-		ensureDelete;
-		writeStreamDo: [ :stream | 
-			self export: aSpTablePresenter on: stream ]
 ]

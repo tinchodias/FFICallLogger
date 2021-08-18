@@ -27,14 +27,25 @@ TFLCallsPresenter class >> defaultSpec [
 ]
 
 { #category : #actions }
-TFLCallsPresenter >> doExportTable [
+TFLCallsPresenter >> doExportTableAsCsv [
 			
 	| target |
 	target := 'recordings.csv' asFileReference nextVersion.
 	
 	SpTable2CSVExporter new export: table to: target.
 	
-	self inform: 'Exported filters to ', target fullName.
+	self inform: 'Exported to ', target fullName.
+]
+
+{ #category : #actions }
+TFLCallsPresenter >> doExportTableAsTxt [
+			
+	| target |
+	target := 'recordings.txt' asFileReference nextVersion.
+	
+	SpTable2TXTExporter new export: table to: target.
+	
+	self inform: 'Exported to ', target fullName.
 ]
 
 { #category : #initialization }
@@ -188,7 +199,12 @@ TFLCallsPresenter >> initializeToolbar [
 		addItemRight: (SpToolbarButtonPresenter new
 			label: 'Export CSV';
 			icon: (self iconNamed: #smallSave);
-			action: [ self doExportTable ];
+			action: [ self doExportTableAsCsv ];
+			yourself);
+		addItemRight: (SpToolbarButtonPresenter new
+			label: 'Export TXT';
+			icon: (self iconNamed: #smallSave);
+			action: [ self doExportTableAsTxt ];
 			yourself)
 ]
 
