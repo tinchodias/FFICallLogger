@@ -89,10 +89,15 @@ TFLSignal >> prepareAsRecording [
 TFLSignal >> printOneLineContentsOn: aStream [
 
 	aStream
+		nextPutAll: processId;
+		nextPutAll: ' => ';
+		nextPutAll: moduleName;
+		nextPutAll: ' / ';
 		nextPutAll: functionName;
 		nextPut: $(;
 		nextPutAll: arguments asCommaString;
-		nextPut: $)
+		nextPutAll: ') => ';
+		print: answer
 
 ]
 
