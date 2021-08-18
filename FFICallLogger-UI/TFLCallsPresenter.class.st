@@ -165,7 +165,9 @@ TFLCallsPresenter >> initializePresenters [
 	table := self newTable.
 	self initializeColumns.
 	self initializeContextMenu.
-	table whenSelectionChangedDo: [ self refreshStatusBar ].
+	table
+		whenSelectionChangedDo: [ self refreshStatusBar ];
+		whenActivatedDo: [ :selection | selection selectedItem inspect ].
 	
 	"Trigger initial refresh"
 	refreshDeferrer schedule.
