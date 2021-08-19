@@ -166,9 +166,8 @@ TFLCallsPresenter >> initializePresenters [
 	statusBar := self newStatusBar.
 
 	stackList := self newList
-"		display: [:each | each ];"
 		whenActivatedDo: [ :selection |
-			selection selectedItem inspect ];
+			selection selectedItem method browse ];
 		yourself.
 	
 	callsTable := self newTable.
