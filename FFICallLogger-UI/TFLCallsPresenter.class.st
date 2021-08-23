@@ -163,7 +163,7 @@ TFLCallsPresenter >> initializePresenters [
 	toolbar := self newToolbar.
 	self initializeToolbar.
 
-	statusBar := self newStatusBar.
+	statusBar := self newLabel.
 
 	stackList := self newList
 		whenActivatedDo: [ :selection |
@@ -229,7 +229,7 @@ TFLCallsPresenter >> refreshStackList [
 { #category : #accessing }
 TFLCallsPresenter >> refreshStatusBar [
 
-	statusBar pushMessage: self statusBarMessage
+	statusBar label: self statusBarMessage
 ]
 
 { #category : #initialization }
