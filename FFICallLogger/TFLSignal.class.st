@@ -27,7 +27,7 @@ TFLSignal class >> emitFromCall: aTFSameThreadCall arguments: aCollection answer
 	(self
 		function: aTFSameThreadCall function
 		arguments: aCollection
-		answer: (answer == aTFSameThreadCall ifTrue: [ nil ] ifFalse: [ answer ])
+		answer: (answer == aTFSameThreadCall ifTrue: [ TFLNoAnswer instance ] ifFalse: [ answer ])
 		stack: (thisContext stack allButFirst: 3)) emit.
 ]
 
