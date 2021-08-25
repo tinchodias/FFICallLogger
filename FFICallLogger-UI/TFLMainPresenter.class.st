@@ -44,6 +44,17 @@ TFLMainPresenter >> initializePresenters [
 ]
 
 { #category : #initialization }
+TFLMainPresenter >> initializeWindow: aSpWindowPresenter [
+
+	super initializeWindow: aSpWindowPresenter.
+
+	aSpWindowPresenter
+		title: 'FFI Call Logger';
+		initialExtent: 1024@720
+
+]
+
+{ #category : #initialization }
 TFLMainPresenter >> setModelBeforeInitialization: aLogger [
 
 	logger := aLogger
