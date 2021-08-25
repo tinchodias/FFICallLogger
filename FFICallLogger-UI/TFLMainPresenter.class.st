@@ -49,7 +49,8 @@ TFLMainPresenter >> initializeWindow: aSpWindowPresenter [
 
 	aSpWindowPresenter
 		title: 'FFI Call Logger';
-		initialExtent: 1024@720
+		centered;
+		initialExtent: 1024@640
 
 ]
 
