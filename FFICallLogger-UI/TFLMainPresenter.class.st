@@ -10,7 +10,6 @@ app := SpApplication new.
 model := TFLCallLogger instance.
 presenter := TFLMainPresenter newApplication: app model: model.
 presenter openWithSpec.
-presenter window title: 'FFI Call Logger'.
 ~~~
 
 "
