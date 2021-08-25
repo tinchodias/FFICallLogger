@@ -6,10 +6,7 @@ My collaborators are TFLCallsPresenter and TFLFiltersPresenter.
 Example:
 ~~~
 | app model presenter |
-app := SpApplication new 
-""  useBackend: #Brick;""
-  yourself.
-
+app := SpApplication new.
 model := TFLCallLogger instance.
 presenter := TFLMainPresenter newApplication: app model: model.
 presenter openWithSpec.

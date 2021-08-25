@@ -48,7 +48,7 @@ TFLFiltersPresenter >> initializeContextMenu [
 		| selectedFilter |
 		selectedFilter := filtersList selectedItem.
 		
-		(self instantiate: SpMenuPresenter)
+		self newMenu
 			addItem: [ :item |
 				item
 					name: 'Inspect';
@@ -99,7 +99,7 @@ TFLFiltersPresenter >> initializeToolbar [
 			action: [ logger stop ];
 			yourself);
 		addItem: (clearButton := SpToolbarButtonPresenter new
-			label: 'Clear';
+			label: 'Clear filters';
 			icon: (self iconNamed: #refresh);
 			action: [ logger resetFilters ];
 			yourself);

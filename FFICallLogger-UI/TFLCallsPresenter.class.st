@@ -98,7 +98,7 @@ TFLCallsPresenter >> initializeContextMenu [
 		| selectedSignal |
 		selectedSignal := callsTable selectedItem.
 		
-		(self instantiate: SpMenuPresenter)
+		self newMenu
 			addItem: [ :item |
 				item
 					name: 'Inspect signal';
@@ -194,6 +194,12 @@ TFLCallsPresenter >> initializeToolbar [
 			icon: (self iconNamed: #refresh);
 			action: [ logger reset ];
 			yourself);
+		addItem: (SpToolbarButtonPresenter new
+			label: 'Go to end';
+			icon: (self iconNamed: #down);
+			action: [ self scrollToEndOfTable ];
+			yourself);
+
 		addItemRight: (SpToolbarButtonPresenter new
 			label: 'Export CSV';
 			icon: (self iconNamed: #smallSave);
@@ -230,6 +236,12 @@ TFLCallsPresenter >> refreshStackList [
 TFLCallsPresenter >> refreshStatusBar [
 
 	statusBar label: self statusBarMessage
+]
+
+{ #category : #actions }
+TFLCallsPresenter >> scrollToEndOfTable [
+
+	callsTable verticalAlignment desiredVisibleRow: callsTable items size
 ]
 
 { #category : #initialization }
