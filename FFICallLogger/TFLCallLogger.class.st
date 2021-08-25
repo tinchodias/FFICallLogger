@@ -144,7 +144,9 @@ TFLCallLogger >> nextPut: aFFICallSignal [
 	aFFICallSignal prepareAsRecording. "TODO: argument filtering need to prepare not-lazily"
 
 	(self shouldRecord: aFFICallSignal)
-		ifTrue: [ super nextPut: aFFICallSignal ]
+		ifTrue: [
+			"Stdio stdout << aFFICallSignal oneLineContents; crlf."
+			super nextPut: aFFICallSignal ]
 		ifFalse: [
 			numberOfFilteredSignals := numberOfFilteredSignals + 1.
 			self announceChanged ]
