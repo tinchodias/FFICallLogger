@@ -30,8 +30,8 @@ TFLAddress >> asString [
 
 { #category : #printing }
 TFLAddress >> printOn: aStream [
-	"Answer a lowercase hexadecimal String representation of the receiver prefixed by @."
+	"Print a lowercase hexadecimal String representation of my 4 higher bytes, prefixed by @."
 
 	aStream nextPutAll: '@'.
-	self do: [ :each | each printLowercaseHexByteOn: aStream ]
+	self from: 1 to: 4 do: [ :each | each printLowercaseHexByteOn: aStream ]
 ]
