@@ -41,6 +41,17 @@ TFLFiltersPresenter >> doFuelOut [
 	self inform: 'Exported filters to ', target.
 ]
 
+{ #category : #private }
+TFLFiltersPresenter >> inform: aString [
+	
+	self application newInform
+		title: 'Information';
+		label: aString;
+		parentWindow: self window;
+		openDialogWithSpec
+
+]
+
 { #category : #initialization }
 TFLFiltersPresenter >> initializeContextMenu [
 
@@ -147,10 +158,21 @@ TFLFiltersPresenter >> openEditFilterDialogFor: aFilter [
 { #category : #actions }
 TFLFiltersPresenter >> openFuelInDialog [
 
-	| fileReferenceOrNil |
-	fileReferenceOrNil := self application selectFileTitle: 'Select the fuel file'.
+	[ 
+	| fileReferenceOrNil materializedObject |
+	fileReferenceOrNil := self application
+		selectFileTitle: 'Select a Fuel file with a collection of filters'.
 	fileReferenceOrNil ifNil: [ ^ self ].
-	logger filters: (FLMaterializer materializeFromFileNamed: fileReferenceOrNil pathString).
+
+	[ 	materializedObject := FLMaterializer
+			materializeFromFileNamed: fileReferenceOrNil pathString.
+		materializedObject isCollection
+			ifFalse: [ self inform: 'Serialized object was not a Collection' ]
+			ifTrue: [ logger filters: materializedObject ]
+	]	on: FLMaterializationError
+		do: [ self inform: 'Failed to read the Fuel file' ].
+	
+	] fork
 ]
 
 { #category : #accessing }
