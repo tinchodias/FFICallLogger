@@ -167,6 +167,13 @@ TFLCallLogger >> removeFilter: aUnaryBlockClosure [
 	self announceChanged.
 ]
 
+{ #category : #accessing }
+TFLCallLogger >> reset [
+
+	super reset.
+	self announceChanged.
+]
+
 { #category : #initialization }
 TFLCallLogger >> resetFilteredSignals [
 
