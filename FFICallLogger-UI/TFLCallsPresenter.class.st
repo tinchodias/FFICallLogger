@@ -265,27 +265,34 @@ TFLCallsPresenter >> setModelBeforeInitialization: aLogger [
 { #category : #accessing }
 TFLCallsPresenter >> statusBarMessage [
 
+	| count |
+	count := logger recordings size.
+
 	^ String streamContents: [ :stream |
 		stream
 			nextPutAll: '[LOG] Recordings: ';
-			print: logger recordings size.
+			print: count.
 		
 		stream
 			nextPutAll: '; filtered: ';
 			print: logger numberOfFilteredSignals.
 
 		logger recordings ifNotEmpty: [ :rs |
-			| duration |
-			duration := rs last timestamp - rs first timestamp.
+			| ms rate |
+			ms := (rs last timestamp - rs first timestamp) asMilliSeconds.
 			stream
-				nextPutAll: '; interval: ';
-				print: duration asSeconds;
-				nextPut: $s.
+				nextPutAll: '; lapse: ';
+				print: ms;
+				nextPutAll: 'ms'.
+
+			rate := 1000 * count / ms.
+			stream
+				nextPutAll: '; per sec: ';
+				print: rate asInteger.
 
 			callsTable selectedItem ifNotNil: [ :signal |
-				| count |
 				count := rs count: [ :each | each functionName = signal functionName ].
-				stream nextPutAll: ((' | [SELECTION] Recordings with same function: {1} ({2}%)') format: {
+				stream nextPutAll: (('    |    [SELECTION] Recordings with same function: {1} ({2}%)') format: {
 					count.
 					(count / rs size * 100) asInteger
 					}).
