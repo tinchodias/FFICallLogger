@@ -114,7 +114,8 @@ TFLCallLogger >> announceChanged [
 TFLCallLogger >> basicReset [
 
 	super basicReset.
-	self resetFilteredSignals
+	self resetFilteredSignals.
+	self announceChanged.
 ]
 
 { #category : #accessing }
@@ -164,13 +165,6 @@ TFLCallLogger >> removeFilter: aUnaryBlockClosure [
 	"Remove a filter. We support sending this message from a closure iterating the filters."
 
 	filters := filters copyWithout: aUnaryBlockClosure.
-	self announceChanged.
-]
-
-{ #category : #accessing }
-TFLCallLogger >> reset [
-
-	super reset.
 	self announceChanged.
 ]
 
