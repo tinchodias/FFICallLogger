@@ -34,6 +34,12 @@ TFLMainPresenter class >> defaultSpec [
 		  yourself
 ]
 
+{ #category : #convenience }
+TFLMainPresenter class >> open [
+
+	(self on: TFLCallLogger instance) openWithSpec
+]
+
 { #category : #initialization }
 TFLMainPresenter >> initializePresenters [ 
 
