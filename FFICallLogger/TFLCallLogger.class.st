@@ -25,6 +25,14 @@ Class {
 	#category : #'FFICallLogger-Core'
 }
 
+{ #category : #convenience }
+TFLCallLogger class >> browseInstallingMethod [
+	"Open a browser on the ThreadedFFI method where this logger installs."
+
+	<example>
+	(TFSameThreadCall >> #executeOn:withArguments:) browse
+]
+
 { #category : #installation }
 TFLCallLogger class >> install [
 	"
