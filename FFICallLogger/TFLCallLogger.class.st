@@ -29,15 +29,13 @@ Class {
 TFLCallLogger class >> browseInstallingMethod [
 	"Open a browser on the ThreadedFFI method where this logger installs."
 
-	<example>
+	<script>
 	(TFSameThreadCall >> #executeOn:withArguments:) browse
 ]
 
 { #category : #installation }
 TFLCallLogger class >> install [
-	"
-	self install
-	"
+	<script>
 
 	TFSameThreadCall compile: 
 'executeOn: runner withArguments: aCollection
@@ -54,6 +52,19 @@ TFLCallLogger class >> startUp: resuming [
 	"If starting the image, all external addresses should be zero then we remove them."
 
 	resuming ifTrue: [ self resetInstance ]
+]
+
+{ #category : #installation }
+TFLCallLogger class >> uninstall [
+	<script>
+
+	TFSameThreadCall compile: 
+'executeOn: runner withArguments: aCollection
+
+	function validate.	
+	^ self invokeFunction: function withArguments: aCollection
+'
+
 ]
 
 { #category : #accessing }
