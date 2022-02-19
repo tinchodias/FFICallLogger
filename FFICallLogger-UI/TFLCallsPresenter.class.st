@@ -285,10 +285,11 @@ TFLCallsPresenter >> statusBarMessage [
 				print: ms;
 				nextPutAll: 'ms'.
 
-			rate := 1000 * count / ms.
-			stream
-				nextPutAll: '; per sec: ';
-				print: rate asInteger.
+			ms isZero ifFalse: [
+				rate := 1000 * count / ms.
+				stream
+					nextPutAll: '; per sec: ';
+					print: rate asInteger ].
 
 			callsTable selectedItem ifNotNil: [ :signal |
 				count := rs count: [ :each | each functionName = signal functionName ].
