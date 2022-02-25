@@ -83,6 +83,7 @@ TFLCallsPerSecondTracer >> stop [
 	traceLoopProcess terminate.
 	traceLoopProcess := nil.
 
+	TFLFunctionCounter uninstall.
 ]
 
 { #category : #accessing }
