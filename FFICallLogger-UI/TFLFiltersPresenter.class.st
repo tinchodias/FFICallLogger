@@ -16,8 +16,8 @@ Class {
 	#category : #'FFICallLogger-UI-Core'
 }
 
-{ #category : #specs }
-TFLFiltersPresenter class >> defaultSpec [
+{ #category : #layout }
+TFLFiltersPresenter class >> defaultLayout [
 
 	^ SpBoxLayout newVertical
 		add: #toolbar expand: false;

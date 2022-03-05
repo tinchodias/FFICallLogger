@@ -24,8 +24,8 @@ Class {
 	#category : #'FFICallLogger-UI-Core'
 }
 
-{ #category : #specs }
-TFLMainPresenter class >> defaultSpec [
+{ #category : #layout }
+TFLMainPresenter class >> defaultLayout [
 
 	^ SpPanedLayout newVertical
 		  positionOfSlider: 33 percent;
@@ -36,9 +36,9 @@ TFLMainPresenter class >> defaultSpec [
 
 { #category : #convenience }
 TFLMainPresenter class >> open [
-	<example>
 
-	(self on: TFLCallLogger instance) openWithSpec
+	<example>
+	(self on: TFLCallLogger instance) open
 ]
 
 { #category : #initialization }
