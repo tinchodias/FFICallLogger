@@ -189,11 +189,11 @@ TFLFiltersPresenter >> refresh [
 TFLFiltersPresenter >> requestFilterBody: exampleBody [
 
 	^ self application newRequest
-		title: 'Filter';
-		label:  'Write the boolean criteria for "[ :signal | <criteria> ]", where True means filtering the signal. Tip: The accessors of TFLSignal are #functionName, #moduleName, #arguments, #answer.';
-		text: exampleBody;
-		openModalWithSpec
-
+		  title: 'Filter';
+		  label:
+			  'Write the boolean criteria for "[ :signal | <criteria> ]", where True means filtering the signal. Tip: The accessors of TFLSignal are #functionName, #moduleName, #arguments, #answer.';
+		  text: exampleBody;
+		  openModal
 ]
 
 { #category : #initialization }
