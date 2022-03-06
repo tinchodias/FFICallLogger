@@ -8,13 +8,15 @@ My instances have two states: ""initialized"" and ""prepared"". The method #prep
 "
 Class {
 	#name : #TFLSignal,
-	#superclass : #BeaconSignal,
+	#superclass : #Announcement,
 	#instVars : [
 		'arguments',
 		'answer',
 		'moduleName',
 		'functionName',
-		'stack'
+		'stack',
+		'microsecondClockValue',
+		'processId'
 	],
 	#category : #'FFICallLogger-Core'
 }
@@ -54,6 +56,11 @@ TFLSignal >> arguments [
 	^ arguments
 ]
 
+{ #category : #converting }
+TFLSignal >> asBeaconSignal [
+	^ self
+]
+
 { #category : #accessing }
 TFLSignal >> functionName [
 
@@ -64,7 +71,9 @@ TFLSignal >> functionName [
 TFLSignal >> initializeWithFunction: aFunction arguments: aCollection answer: anObject stack: anArrayOfContexts [
 
 	self initialize.
-	moduleName := aFunction moduleName asPath basename.
+	microsecondClockValue := DateAndTime clock microsecondClockValue.
+	processId := Processor activeProcess name.
+	moduleName := aFunction moduleName.
 	functionName := aFunction functionName.
 	arguments := aCollection.
 	answer := anObject.
@@ -98,19 +107,33 @@ TFLSignal >> prepareAsRecording [
 ]
 
 { #category : #printing }
+TFLSignal >> printOn: stream [
+
+	self printOneLineContentsOn: stream
+]
+
+{ #category : #printing }
 TFLSignal >> printOneLineContentsOn: aStream [
 
 	aStream
+"		print: self timestamp;
+		nextPutAll: ' | ';
 		nextPutAll: processId;
-		nextPutAll: ' => ';
-		nextPutAll: moduleName;
-		nextPutAll: ' / ';
-		nextPutAll: functionName;
+		nextPutAll: ' | ';
+		nextPutAll: self shortModuleName;
+		nextPutAll: ' | ';"
+		nextPutAll: functionName";
 		nextPut: $(;
 		nextPutAll: arguments asCommaString;
 		nextPutAll: ') => ';
 		print: answer
+"
+]
 
+{ #category : #accessing }
+TFLSignal >> processId [
+
+	^ processId
 ]
 
 { #category : #accessing }
@@ -121,7 +144,19 @@ TFLSignal >> sender [
 ]
 
 { #category : #accessing }
+TFLSignal >> shortModuleName [
+
+	^ moduleName asPath basenameWithoutExtension
+]
+
+{ #category : #accessing }
 TFLSignal >> stack [
 
 	^ stack
+]
+
+{ #category : #accessing }
+TFLSignal >> timestamp [
+	
+	^ DateAndTime fromMicrosecondClockValue: microsecondClockValue
 ]
