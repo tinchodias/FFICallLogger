@@ -2,16 +2,7 @@
 
 Inspect Pharo TFFI calls using Beacon to record, and Spec2 inspectors to explore in UI.
 
-## Install
-
-Evaluate in Pharo 9 or 10:
-
-~~~Smalltalk
-Metacello new
-    baseline: 'FFICallLogger';
-    repository: 'github://tinchodias/FFICallLogger';
-    load.
-~~~
+Please check the [Wiki](../../wiki) for more information.
 
 ## License
 
