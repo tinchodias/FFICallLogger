@@ -1,16 +1,21 @@
 "
-I am a Spec presenter to administrate a TFLCallLogger.
+I am a Spec presenter to administrate a `TFLCallLogger`.
 
-My collaborators are TFLCallsPresenter and TFLFiltersPresenter.
+My collaborators are `TFLCallsPresenter` and `TFLFiltersPresenter`.
 
-Example:
-~~~
+Simple example of use:
+```
+TFLMainPresenter open
+```
+
+More configurable example:
+```
 | app model presenter |
 app := SpApplication new.
 model := TFLCallLogger instance.
 presenter := TFLMainPresenter newApplication: app model: model.
 presenter openWithSpec.
-~~~
+```
 
 "
 Class {
