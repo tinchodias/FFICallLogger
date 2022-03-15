@@ -72,7 +72,7 @@ TFLCallsPresenter >> initializeColumns [
 			yourself);
 		addColumn: ((SpStringTableColumn
 			title: 'Module'
-			evaluated: [ :each | each moduleName ])
+			evaluated: [ :each | each shortModuleName ])
 			width: 70;
 			yourself);
 		addColumn: ((SpStringTableColumn
@@ -122,8 +122,8 @@ TFLCallsPresenter >> initializeContextMenu [
 							action: [ logger addFilter: #functionName equals: selectedSignal functionName ] ];
 					addItem: [ :item |
 						item
-							name: ('Don''t record calls to "{1}" module' format: { selectedSignal moduleName });
-							action: [ logger addFilter: #moduleName equals: selectedSignal moduleName ] ];
+							name: ('Don''t record calls to "{1}" module' format: { selectedSignal shortModuleName });
+							action: [ logger addFilter: #moduleName equals: selectedSignal shortModuleName ] ];
 					addItem: [ :item |
 						item
 							name: ('Don''t record calls from "{1}" process' format: { selectedSignal processId });
@@ -146,7 +146,7 @@ TFLCallsPresenter >> initializeContextMenu [
 							action: [ logger addFilter: #functionName deny: selectedSignal functionName ] ];
 					addItem: [ :item |
 						item
-							name: ('Only record calls to "{1}" module' format: { selectedSignal moduleName });
+							name: ('Only record calls to "{1}" module' format: { selectedSignal shortModuleName });
 							action: [ logger addFilter: #moduleName deny: selectedSignal moduleName ] ];
 					addItem: [ :item |
 						item
