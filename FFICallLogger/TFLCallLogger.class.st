@@ -4,7 +4,7 @@ I'm a logger for ThreadedFFI ""same thread"" calls.
 
 # Install with:	
 
-	TFLCallLogger install.
+	TFLSignal install.
 
 
 # Other useful statements:
@@ -25,46 +25,11 @@ Class {
 	#category : #'FFICallLogger-Core'
 }
 
-{ #category : #convenience }
-TFLCallLogger class >> browseInstallingMethod [
-	"Open a browser on the ThreadedFFI method where this logger installs."
-
-	<script>
-	(TFSameThreadCall >> #executeOn:withArguments:) browse
-]
-
-{ #category : #installation }
-TFLCallLogger class >> install [
-	<script>
-
-	TFSameThreadCall compile: 
-'executeOn: runner withArguments: aCollection
-	| answer |
-	function validate.
-	answer := self invokeFunction: function withArguments: aCollection.
-	TFLSignal emitFromCall: self arguments: aCollection answer: answer.
-	^ answer'
-
-]
-
 { #category : #'system startup' }
 TFLCallLogger class >> startUp: resuming [
 	"If starting the image, all external addresses should be zero then we remove them."
 
 	resuming ifTrue: [ self resetInstance ]
-]
-
-{ #category : #installation }
-TFLCallLogger class >> uninstall [
-	<script>
-
-	TFSameThreadCall compile: 
-'executeOn: runner withArguments: aCollection
-
-	function validate.	
-	^ self invokeFunction: function withArguments: aCollection
-'
-
 ]
 
 { #category : #accessing }

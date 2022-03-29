@@ -13,13 +13,6 @@ Class {
 }
 
 { #category : #installation }
-TFLSessionCallsLogger class >> install [
-	<script>
-
-	TFLCallLogger install
-]
-
-{ #category : #installation }
 TFLSessionCallsLogger class >> logToFileAndQuit [
 	<script>
 
@@ -78,13 +71,6 @@ s := World worldState worldRenderer actualScreenSize.
 1 seconds wait.				
 				
 			self logToFileAndQuit.] fork
-]
-
-{ #category : #installation }
-TFLSessionCallsLogger class >> uninstall [
-	<script>
-
-	TFLCallLogger uninstall
 ]
 
 { #category : #accessing }
@@ -154,7 +140,7 @@ SDL_RenderPresent
 { #category : #accessing }
 TFLSessionCallsLogger >> start [
 
-	self class install.
+	TFLSignal install.
 	self startFor: TFLSignal
 ]
 
@@ -162,6 +148,6 @@ TFLSessionCallsLogger >> start [
 TFLSessionCallsLogger >> stop [
 
 	super stop.
-	self class uninstall.
+	TFLSignal uninstall.
 
 ]

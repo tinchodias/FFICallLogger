@@ -22,6 +22,14 @@ Class {
 }
 
 { #category : #convenience }
+TFLSignal class >> browseInstallingMethod [
+	"Open a browser on the ThreadedFFI method where this logger installs."
+
+	<script>
+	(TFSameThreadCall >> #executeOn:withArguments:) browse
+]
+
+{ #category : #convenience }
 TFLSignal class >> emitFromCall: aTFSameThreadCall arguments: aCollection answer: answer [
 	"Convenience method that creates and emits an instance of this class.
 	IMPORTANT: it assumes it's sent from TFSameThreadCall>>#executeOn:withArguments:."
@@ -42,6 +50,33 @@ TFLSignal class >> function: aFunction arguments: aCollection answer: anObject s
 		  answer: anObject
 		  stack: anArrayOfContexts;
 		  yourself
+]
+
+{ #category : #installation }
+TFLSignal class >> install [
+	<script>
+
+	TFSameThreadCall compile: 
+'executeOn: runner withArguments: aCollection
+	| answer |
+	function validate.
+	answer := self invokeFunction: function withArguments: aCollection.
+	TFLSignal emitFromCall: self arguments: aCollection answer: answer.
+	^ answer'
+
+]
+
+{ #category : #installation }
+TFLSignal class >> uninstall [
+	<script>
+
+	TFSameThreadCall compile: 
+'executeOn: runner withArguments: aCollection
+
+	function validate.	
+	^ self invokeFunction: function withArguments: aCollection
+'
+
 ]
 
 { #category : #accessing }

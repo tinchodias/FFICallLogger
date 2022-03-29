@@ -69,7 +69,7 @@ TFLCallsPerSecondTracer >> forkTraceLoop [
 TFLCallsPerSecondTracer >> start [
 
 	"Ensure installed on the system"
-	TFLFunctionCounter install.
+	TFLSignal install.
 
 	self forkTraceLoop.
 
@@ -83,7 +83,7 @@ TFLCallsPerSecondTracer >> stop [
 	traceLoopProcess terminate.
 	traceLoopProcess := nil.
 
-	TFLFunctionCounter uninstall.
+	TFLSignal uninstall.
 ]
 
 { #category : #accessing }

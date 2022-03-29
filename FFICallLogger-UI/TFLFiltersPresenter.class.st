@@ -120,19 +120,24 @@ TFLFiltersPresenter >> initializeToolbar [
 			action: [ self openAddFilterDialog ];
 			yourself);
 		addItemRight: (SpToolbarButtonPresenter new
-			label: 'Install on TF';
-			icon: (self iconNamed: #down);
-			action: [ TFLCallLogger install ];
+			label: 'Uninstall TFLSignal';
+			icon: (self iconNamed: #up);
+			action: [ TFLSignal uninstall ];
 			yourself);
 		addItemRight: (SpToolbarButtonPresenter new
-			label: 'Export Fuel';
-			icon: (self iconNamed: #smallSave);
-			action: [ self doFuelOut ];
+			label: 'Install TFLSignal';
+			icon: (self iconNamed: #down);
+			action: [ TFLSignal install ];
 			yourself);
 		addItemRight: (SpToolbarButtonPresenter new
 			label: 'Import Fuel';
 			icon: (self iconNamed: #smallSave);
 			action: [ self openFuelInDialog ];
+			yourself);
+		addItemRight: (SpToolbarButtonPresenter new
+			label: 'Export Fuel';
+			icon: (self iconNamed: #smallSave);
+			action: [ self doFuelOut ];
 			yourself).
 
 ]

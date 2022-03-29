@@ -23,20 +23,6 @@ Class {
 	#category : #'FFICallLogger-Core'
 }
 
-{ #category : #installation }
-TFLFunctionCounter class >> install [
-	<script>
-
-	TFLCallLogger install
-]
-
-{ #category : #installation }
-TFLFunctionCounter class >> uninstall [
-	<script>
-
-	TFLCallLogger uninstall
-]
-
 { #category : #accessing }
 TFLFunctionCounter >> functionNamesAndCounts [
 
