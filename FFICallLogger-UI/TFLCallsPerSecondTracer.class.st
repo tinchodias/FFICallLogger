@@ -89,27 +89,26 @@ TFLCallsPerSecondTracer >> stop [
 { #category : #accessing }
 TFLCallsPerSecondTracer >> trace: aTFLFunctionCounter elapsedMS: elapsedMS [
 
-	| functionNamesSeries callsPerSecondSeries aDictionary df |
+	| aDictionary rows |
 	self flag: #todo. "Split this UI code, and keep the rest of the class as model."
 	
 	aDictionary := aTFLFunctionCounter functionNamesAndCounts.
 
-	functionNamesSeries := aDictionary keys asDataSeries.
-	callsPerSecondSeries := (aDictionary values
-		collect: [ :value | 1000 * value / elapsedMS ]) asDataSeries
-			name: 'calls/s';
-			yourself.
-	
-	df := (DataFrame withRowNames: functionNamesSeries)
-		addColumn: callsPerSecondSeries;
-		sortDescendingBy: callsPerSecondSeries name;
-		yourself.
+	rows := SortedCollection sortUsing: [ :a :b | a second > b second ].
+	aDictionary keysAndValuesDo: [ :key :value |
+		rows add: { key. 1000.0 * value / elapsedMS } ].
+	rows := Array streamContents: [ :stream |
+		stream nextPut: #('#' 'calls/s').
+		rows do: [:each |
+			stream nextPut: {
+				each first.
+				each second printShowingDecimalPlaces: 2 }
+			] ].
 
 	Transcript clear.
-	DataFrameMarkdownPrinter new
-		stringBlockClosure: [ :o | o printShowingDecimalPlaces: 2 ];
+	TFLMarkdownTablePrinter new
 		stream: Transcript;
-		dataFrame: df;
+		rows: rows;
 		write.
 	Transcript flush.
 
