@@ -19,12 +19,11 @@ TFLMarkdownTablePrinter >> initialize [
 
 	super initialize.
 	
-	"By default, use this line-ending which works both on Transcript and unix-like stdout."
+	"By default, use this line-ending which works both on Transcript and Unix-like stdout."
 	newLineString := String crlf.
 
-	"By default, align left only row names, which is good
-	when all cells are numbers."
-	isColumnLeftAlignedBlock := [ :columnIndex | columnIndex = 1 ]
+	"By default, align left all columns."
+	isColumnLeftAlignedBlock := [ :columnIndex | true ]
 ]
 
 { #category : #accessing }

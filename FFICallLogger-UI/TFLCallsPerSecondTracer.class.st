@@ -109,6 +109,7 @@ TFLCallsPerSecondTracer >> trace: aTFLFunctionCounter elapsedMS: elapsedMS [
 	TFLMarkdownTablePrinter new
 		stream: Transcript;
 		rows: rows;
+		isColumnLeftAlignedBlock: [ :columnIndex | columnIndex = 1 ];
 		write.
 	Transcript flush.
 
