@@ -6,51 +6,31 @@ Class {
 	#superclass : #Object,
 	#instVars : [
 		'rows',
-		'stream',
-		'horizontalMargin',
 		'columnWidths',
-		'newLineString'
+		'stream',
+		'newLineString',
+		'isColumnLeftAlignedBlock'
 	],
 	#category : #'FFICallLogger-UI'
 }
-
-{ #category : #accessing }
-TFLMarkdownTablePrinter >> columnWidths [
-
-	^ columnWidths
-]
-
-{ #category : #accessing }
-TFLMarkdownTablePrinter >> horizontalMargin [
-
-	^ horizontalMargin
-]
-
-{ #category : #accessing }
-TFLMarkdownTablePrinter >> horizontalMargin: aPositiveInteger [
-
-	horizontalMargin := aPositiveInteger
-]
 
 { #category : #initialization }
 TFLMarkdownTablePrinter >> initialize [
 
 	super initialize.
 	
-	horizontalMargin := 1.
+	"By default, use this line-ending which works both on Transcript and unix-like stdout."
 	newLineString := String crlf.
-]
 
-{ #category : #private }
-TFLMarkdownTablePrinter >> isColumnIndexLeftAligned: columnIndex [
-
-	^ columnIndex = 1
+	"By default, align left only row names, which is good
+	when all cells are numbers."
+	isColumnLeftAlignedBlock := [ :columnIndex | columnIndex = 1 ]
 ]
 
 { #category : #accessing }
-TFLMarkdownTablePrinter >> newLineString [
+TFLMarkdownTablePrinter >> isColumnLeftAlignedBlock: aBlockThatReceivesColumnIndex [
 
-	^ newLineString
+	isColumnLeftAlignedBlock := aBlockThatReceivesColumnIndex
 ]
 
 { #category : #accessing }
@@ -63,12 +43,6 @@ TFLMarkdownTablePrinter >> newLineString: aString [
 TFLMarkdownTablePrinter >> rows: aCollectionOfCollectionsOfStrings [
 
 	rows := aCollectionOfCollectionsOfStrings
-]
-
-{ #category : #accessing }
-TFLMarkdownTablePrinter >> stream [
-
-	^ stream
 ]
 
 { #category : #accessing }
@@ -99,13 +73,12 @@ TFLMarkdownTablePrinter >> write [
 { #category : #private }
 TFLMarkdownTablePrinter >> writeCell: aString columnIndex: columnIndex [
 
-	| columnWidth padding |
+	| columnWidth |
 	columnWidth := columnWidths at: columnIndex.
-	padding := String new: columnWidth - aString size withAll: Character space.
 
-	(self isColumnIndexLeftAligned: columnIndex)
-		ifTrue: [ stream << aString; << padding ]
-		ifFalse: [ stream << padding; << aString ]
+	stream << ((isColumnLeftAlignedBlock cull: columnIndex)
+		ifTrue: [ aString padRightTo: columnWidth ]
+		ifFalse: [ aString padLeftTo: columnWidth ])
 
 ]
 
@@ -118,10 +91,11 @@ TFLMarkdownTablePrinter >> writeHoritontalTick [
 { #category : #private }
 TFLMarkdownTablePrinter >> writeHorizontalLine [
 
-	columnWidths
-		do: [ :each |
-			self writeVerticalTick.
-			(each + (horizontalMargin * 2)) timesRepeat: [ self writeHoritontalTick ] ].
+	columnWidths do: [ :each |
+		self writeVerticalTick.
+		"+2 due to space margin before and after the column contents"
+		(each + 2) timesRepeat: [
+			self writeHoritontalTick ] ].
 	self writeVerticalTick.
 	self writeNewLine.
 
