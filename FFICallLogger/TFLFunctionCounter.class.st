@@ -1,17 +1,18 @@
 "
-I'm a complement to TFLCallLogger that counts the number of calls to each functionName.
+I'm a complement to `TFLCallLogger` that counts the number of calls to each functionName.
 
-Use like:
+Usage:
 
+```
 TFLCallLogger install.
 TFLFunctionCounter resetInstance.
 TFLFunctionCounter start.
-""Time passes""
+""Now, time passes""
 TFLFunctionCounter stop.
 TFLFunctionCounter instance functionNamesAndCounts.
->>>
-a Dictionary [8 items] (#SDL_GetModState->62 #SDL_GetMouseState->34 #SDL_GetWindowSize->368 #SDL_LockTexture->16 #SDL_PollEvent->553 #SDL_RenderCopy->32 #SDL_RenderPresent->32 #SDL_UnlockTexture->16 )
-
+"">>>
+a Dictionary [8 items] (#SDL_GetModState->62 #SDL_GetMouseState->34 #SDL_GetWindowSize->368 #SDL_LockTexture->16 #SDL_PollEvent->553 #SDL_RenderCopy->32 #SDL_RenderPresent->32 #SDL_UnlockTexture->16 )""
+```
 "
 Class {
 	#name : #TFLFunctionCounter,

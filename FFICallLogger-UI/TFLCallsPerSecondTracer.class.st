@@ -1,18 +1,19 @@
 "
-I listen a TFLFunctionCuonter and trace its output regularly, every second.
+I listen a `TFLFunctionCounter` and trace its output regularly, every second.
 
 Example of use:
 
-~~~
+```
 t := TFLCallsPerSecondTracer new.
 
 t start.
 t stop.
-~~~
+```
 
-Now, Transcript should be showing something like:
+Now, `Transcript` should be showing something like:
 
-~~~
+```
+""
 | #                 | calls/s |
 |-------------------|---------|
 | SDL_GetWindowSize |  545.36 |
@@ -26,7 +27,8 @@ Now, Transcript should be showing something like:
 | SDL_FreeCursor    |    1.00 |
 | SDL_SetCursor     |    1.00 |
 | SDL_CreateCursor  |    1.00 |
-~~~
+""
+```
 
 "
 Class {
@@ -35,7 +37,7 @@ Class {
 	#instVars : [
 		'traceLoopProcess'
 	],
-	#category : #'FFICallLogger-UI'
+	#category : #'FFICallLogger-UI-Core'
 }
 
 { #category : #accessing }

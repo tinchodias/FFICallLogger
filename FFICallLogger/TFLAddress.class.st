@@ -1,7 +1,7 @@
 "
-I represent a ""immutable"" snapshot of an ExternalAddress.
+I represent a ""immutable"" snapshot of an `ExternalAddress`.
 
-Maybe a bit more precisely, I'm a copy of the address that won't change.
+A bit more precisely: I'm a copy of the address that isn't supposed to change for example, when the finalization process executes `ExternalAddress>>#beNull` on the original address.
 
 "
 Class {

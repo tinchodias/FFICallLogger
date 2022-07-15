@@ -2,18 +2,20 @@
 I'm a logger for ThreadedFFI ""same thread"" calls.
 
 
-# Install with:	
+Install with:	
 
+```
 	TFLSignal install.
+```
 
+Other useful statements:
 
-# Other useful statements:
-
+```
 	TFLCallLogger instance inspect.
 	TFLCallLogger start.
 	TFLCallLogger stop.
 	TFLCallLogger resetInstance.
-
+```
 "
 Class {
 	#name : #TFLCallLogger,

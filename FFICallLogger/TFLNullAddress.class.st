@@ -1,7 +1,7 @@
 "
 I represent the C NULL address.
 
-I implement singleton via #instance in class-side, and provide specialized printing protocol.
+I implement singleton via `TFLNullAddress class >> #instance`, and provide specialized printing protocol.
 "
 Class {
 	#name : #TFLNullAddress,

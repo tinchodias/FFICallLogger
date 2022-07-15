@@ -1,5 +1,5 @@
 "
-I am a Spec presenter to administrate the filters of a TFLCallLogger.
+I am a Spec presenter to administrate the filters of a `TFLCallLogger`.
 "
 Class {
 	#name : #TFLFiltersPresenter,

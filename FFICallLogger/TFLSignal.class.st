@@ -1,9 +1,9 @@
 "
 I'm a Beacon signal with information about a ThreadedFFI call that was just executed.
 
-A started `TFLCallLogger instance` records me. Browse its class comment for more information.
+A started `TFLCallLogger` instance records me. Browse its class comment for more information.
 
-My instances have two states: ""initialized"" and ""prepared"". The method #prepareAsRecording mutates an instance as a kind of snapshot, so posterior modifications on the original FFI call object are not lost. This is a performance optimization, to avoid preparing instances that are filtered.
+My instances have two states: ""initialized"" and ""prepared"". The method `TFLSignal>>#prepareAsRecording` mutates an instance as a kind of snapshot, so posterior modifications on the original FFI call object are not lost. This is a performance optimization, to avoid preparing instances that are filtered.
 
 "
 Class {

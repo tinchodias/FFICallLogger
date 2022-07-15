@@ -1,22 +1,22 @@
 "
-I delay code execution in a new Process.
+I delay code execution in a new `Process`.
 
 My responsability is to schedule sending #value to an object within certain window of time.
 
 This is an example of instance creation:
 
-~~~
+```
 	MinMaxDeferrer
 		value: [ 'Hola' traceCr ]
 		notBefore: 100 milliSeconds
 		notAfter:  500 milliSeconds.
-~~~
+```
 
-Each time this deferrer receives #schedule, a Process is forked to wait **at least** 100ms to value the closure (this is the #minDeferral duration).
+Each time this deferrer receives `MinMaxDeferrer>>#schedule`, a `Process` is forked to wait **at least** 100ms to value the closure (this is the `MinMaxDeferrer>>#minDeferral` duration).
 During the wait, any other #schedule will postpone the evaluation 100ms more.
-But there is a limit for postponing: this is the #maxDeferral of 500ms in this example.
+But there is a limit for postponing: this is the `MinMaxDeferrer>>#maxDeferral` of 500ms in this example.
 
-The #processName: and #proecssPriority: methods provide a way to customize the creation of the mentioned Process.
+The `MinMaxDeferrer>>#processName:` and `MinMaxDeferrer>>#processPriority:` methods provide a way to customize the creation of the mentioned `Process`.
 "
 Class {
 	#name : #MinMaxDeferrer,

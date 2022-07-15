@@ -1,5 +1,5 @@
 "
-I'm a Beacon logger for TFLSignal to a waitfree queue.
+I'm a Beacon logger for `TFLSignal` to a waitfree queue.
 
 "
 Class {

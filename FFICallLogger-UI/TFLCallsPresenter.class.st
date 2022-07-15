@@ -1,5 +1,5 @@
 "
-I am a Spec presenter to show signals recorded by a TFLCallLogger.
+I am a Spec presenter to show signals recorded by a `TFLCallLogger`.
 "
 Class {
 	#name : #TFLCallsPresenter,
