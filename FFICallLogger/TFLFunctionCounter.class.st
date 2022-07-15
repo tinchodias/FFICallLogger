@@ -21,7 +21,7 @@ Class {
 		'queue',
 		'bagOfFunctionNames'
 	],
-	#category : #'FFICallLogger-Core'
+	#category : #'FFICallLogger-Counter'
 }
 
 { #category : #accessing }
@@ -42,7 +42,7 @@ TFLFunctionCounter >> initialize [
 
 { #category : #registering }
 TFLFunctionCounter >> nextPut: aTFLSignal [
-	"Store fast in a waitfree collection. To be processes on demand."
+	"Store fast in a waitfree collection. To be processed on demand."
 	
 	queue nextPut: aTFLSignal functionName
 ]

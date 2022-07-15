@@ -1,5 +1,5 @@
 "
-I listen a `TFLFunctionCounter` and trace its output regularly, every second.
+I listen FFI calls and summarize them on Transcript regularly (every second).
 
 Example of use:
 
@@ -35,77 +35,50 @@ Class {
 	#name : #TFLCallsPerSecondTracer,
 	#superclass : #Object,
 	#instVars : [
-		'traceLoopProcess'
+		'functionCounter'
 	],
-	#category : #'FFICallLogger-UI-Core'
+	#category : #'FFICallLogger-UI-Counter'
 }
 
-{ #category : #accessing }
-TFLCallsPerSecondTracer >> forkTraceLoop [
+{ #category : #initialization }
+TFLCallsPerSecondTracer >> initialize [
 
-	traceLoopProcess ifNotNil: [
-		self error: 'Already started' ].
+	super initialize.
 
-	traceLoopProcess := [
-
-		[	| aCounter startMS stopMS |
-			aCounter := TFLFunctionCounter new.
-
-			"Count FFI calls during a second, and measure the exact number of
-			milliseconds to adjust the output."
-			startMS := Time millisecondClockValue.
-			aCounter runDuring: [ 1 second wait ].
-			stopMS := Time millisecondClockValue.
-
-			"Schedule output after this process yields the Processor, to 
-			minimize the number of lost (uncounted) FFI calls."
-			[ self trace: aCounter elapsedMS: (stopMS - startMS) ]
-				forkNamed: 'Calls Per Second Tracer - Update'
-		] repeat.
-	
-	] forkNamed: 'Calls Per Second Tracer - Loop'
-
+	functionCounter := TFLFunctionCyclicCounter newEvery: 1 second
 ]
 
-{ #category : #accessing }
+{ #category : #tracing }
 TFLCallsPerSecondTracer >> start [
 
-	"Ensure installed on the system"
-	TFLSignal install.
+	functionCounter announcer
+		when: TFLFunctionCyclicCounterAnnouncement
+		send: #trace:
+		to: self.
 
-	self forkTraceLoop.
-
+	functionCounter start
 ]
 
-{ #category : #accessing }
+{ #category : #tracing }
 TFLCallsPerSecondTracer >> stop [
 
-	traceLoopProcess ifNil: [ ^self ].
+	functionCounter stop.
 	
-	traceLoopProcess terminate.
-	traceLoopProcess := nil.
+	functionCounter announcer unsubscribe: self.
 
-	TFLSignal uninstall.
 ]
 
-{ #category : #accessing }
-TFLCallsPerSecondTracer >> trace: aTFLFunctionCounter elapsedMS: elapsedMS [
+{ #category : #tracing }
+TFLCallsPerSecondTracer >> trace: aTFLCallPerLapseAnnouncement [
 
-	| aDictionary rows |
-	self flag: #todo. "Split this UI code, and keep the rest of the class as model."
-	
-	aDictionary := aTFLFunctionCounter functionNamesAndCounts.
-
-	rows := SortedCollection sortUsing: [ :a :b | a second > b second ].
-	aDictionary keysAndValuesDo: [ :key :value |
-		rows add: { key. 1000.0 * value / elapsedMS } ].
+	| rows |
 	rows := Array streamContents: [ :stream |
 		stream nextPut: #('#' 'calls/s').
-		rows do: [:each |
-			stream nextPut: {
-				each first.
-				each second printShowingDecimalPlaces: 2 }
-			] ].
+		aTFLCallPerLapseAnnouncement functionNamesAndCountsAdjusted
+			do: [ :each |
+				stream nextPut: {
+					each first.
+					each second printShowingDecimalPlaces: 2 } ] ].
 
 	Transcript clear.
 	TFLMarkdownTablePrinter new
