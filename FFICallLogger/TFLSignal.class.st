@@ -26,19 +26,19 @@ TFLSignal class >> browseInstallingMethod [
 	"Open a browser on the ThreadedFFI method where this logger installs."
 
 	<script>
-	(TFSameThreadCall >> #executeOn:withArguments:) browse
+	(TFSameThreadRunner>>#invokeFunction:withArguments:) browse
 ]
 
 { #category : #convenience }
-TFLSignal class >> emitFromCall: aTFSameThreadCall arguments: aCollection answer: answer [
+TFLSignal class >> emitFromRunner: aTFSameThreadRunner function: function arguments: aCollection answer: answer [
 	"Convenience method that creates and emits an instance of this class.
 	IMPORTANT: it assumes it's sent from TFSameThreadCall>>#executeOn:withArguments:."
 
 	(self
-		function: aTFSameThreadCall function
+		function: function
 		arguments: aCollection
-		answer: (answer == aTFSameThreadCall ifTrue: [ TFLNoAnswer instance ] ifFalse: [ answer ])
-		stack: (thisContext stack allButFirst: 3)) emit.
+		answer: (answer == aTFSameThreadRunner ifTrue: [ TFLNoAnswer instance ] ifFalse: [ answer ])
+		stack: (thisContext stack allButFirst: 2)) emit.
 ]
 
 { #category : #'instance creation' }
@@ -56,12 +56,12 @@ TFLSignal class >> function: aFunction arguments: aCollection answer: anObject s
 TFLSignal class >> install [
 	<script>
 
-	TFSameThreadCall compile: 
-'executeOn: runner withArguments: aCollection
+	TFSameThreadRunner compile: 
+'invokeFunction: function withArguments: aCollection 
 	| answer |
 	function validate.
-	answer := self invokeFunction: function withArguments: aCollection.
-	TFLSignal emitFromCall: self arguments: aCollection answer: answer.
+	answer := self primitivePerformWorkerCall: function withArguments: aCollection.
+	TFLSignal emitFromRunner: self function: function arguments: aCollection answer: answer.
 	^ answer'
 
 ]
@@ -70,12 +70,12 @@ TFLSignal class >> install [
 TFLSignal class >> uninstall [
 	<script>
 
-	TFSameThreadCall compile: 
-'executeOn: runner withArguments: aCollection
+	TFSameThreadRunner compile: 
+'invokeFunction: function withArguments: aCollection 
 
 	function validate.	
-	^ self invokeFunction: function withArguments: aCollection
-'
+	^ self primitivePerformWorkerCall: function withArguments: aCollection 
+	'
 
 ]
 
