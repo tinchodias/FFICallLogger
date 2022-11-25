@@ -52,13 +52,60 @@ TFLSignal class >> function: aFunction arguments: aCollection answer: anObject s
 { #category : #initialization }
 TFLSignal class >> initialize [
 
+	SystemVersion current major < 11
+		ifTrue: [ self initializeBeforePharo11 ]
+		ifFalse: [ self initializeAfterPharo11 ]
+]
+
+{ #category : #initialization }
+TFLSignal class >> initializeAfterPharo11 [
+
+	self
+		assert: self ffiInvokerMethod tempNames = #(#function #aCollection)
+		description: 'Unexpected source code on FFI invoker'.
+	
 	ffiInvokerMetalink := MetaLink new
 		metaObject: [ :c :answer |
 			| answerOrNoAnswer relevantStack aSignal |
 
 			"Nasty way to detect void-returning calls"
 			answerOrNoAnswer :=
-				answer class = TFSameThreadCall
+				answer className = #TFSameThreadCall
+					ifTrue: [ TFLNoAnswer instance ]
+					ifFalse: [ answer ].
+
+			"Reject runner's invokeFunction"
+			relevantStack := c stack allButFirst: 1.
+
+			aSignal := TFLSignal
+				function: (c tempNamed: #function)
+				arguments: (c tempNamed: #aCollection)
+				answer: answerOrNoAnswer
+				stack: relevantStack.
+			
+			aSignal emit ];
+		arguments: #(context value);
+		selector: #value:value:;
+		options: #(- optionCompileOnLinkInstallation);
+		control: #before;
+		yourself
+
+]
+
+{ #category : #initialization }
+TFLSignal class >> initializeBeforePharo11 [
+
+	self
+		assert: self ffiInvokerMethod tempNames = #(#aTFExternalFunction #aCollection)
+		description: 'Unexpected source code on FFI invoker'.
+	
+	ffiInvokerMetalink := MetaLink new
+		metaObject: [ :c :answer |
+			| answerOrNoAnswer relevantStack aSignal |
+
+			"Nasty way to detect void-returning calls"
+			answerOrNoAnswer :=
+				answer className = #TFSameThreadCall
 					ifTrue: [ TFLNoAnswer instance ]
 					ifFalse: [ answer ].
 
