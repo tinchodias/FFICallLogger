@@ -11,7 +11,7 @@ Class {
 		'newLineString',
 		'isColumnLeftAlignedBlock'
 	],
-	#category : #'FFICallLogger-UI-Utils'
+	#category : #'FFICallLogger-UI'
 }
 
 { #category : #initialization }

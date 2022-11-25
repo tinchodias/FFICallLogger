@@ -26,7 +26,7 @@ Class {
 		'callsPresenter',
 		'filtersPresenter'
 	],
-	#category : #'FFICallLogger-UI-Core'
+	#category : #'FFICallLogger-UI-Spec2'
 }
 
 { #category : #layout }
@@ -43,7 +43,7 @@ TFLMainPresenter class >> defaultLayout [
 TFLMainPresenter class >> open [
 
 	<example>
-	(self on: TFLCallLogger instance) open
+	^ (self on: TFLCallLogger instance) open
 ]
 
 { #category : #initialization }

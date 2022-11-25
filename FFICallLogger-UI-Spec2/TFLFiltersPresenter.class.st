@@ -13,7 +13,7 @@ Class {
 		'stopButton',
 		'filtersList'
 	],
-	#category : #'FFICallLogger-UI-Core'
+	#category : #'FFICallLogger-UI-Spec2'
 }
 
 { #category : #layout }

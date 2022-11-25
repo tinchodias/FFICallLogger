@@ -1,7 +1,7 @@
 Class {
 	#name : #SpTable2CSVExporter,
 	#superclass : #SpTableExporter,
-	#category : #'FFICallLogger-UI-Utils'
+	#category : #'FFICallLogger-UI-Spec2'
 }
 
 { #category : #public }

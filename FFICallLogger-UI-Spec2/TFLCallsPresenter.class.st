@@ -12,7 +12,7 @@ Class {
 		'callsTable',
 		'stackList'
 	],
-	#category : #'FFICallLogger-UI-Core'
+	#category : #'FFICallLogger-UI-Spec2'
 }
 
 { #category : #layout }

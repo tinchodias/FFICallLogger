@@ -37,7 +37,7 @@ Class {
 	#instVars : [
 		'functionCounter'
 	],
-	#category : #'FFICallLogger-UI-Counter'
+	#category : #'FFICallLogger-UI'
 }
 
 { #category : #initialization }

@@ -1,7 +1,7 @@
 Class {
 	#name : #TFLMarkdownTablePrinterTest,
 	#superclass : #TestCase,
-	#category : #'FFICallLogger-UI-Utils'
+	#category : #'FFICallLogger-UI-Tests'
 }
 
 { #category : #tests }
