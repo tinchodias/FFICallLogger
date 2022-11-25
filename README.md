@@ -1,9 +1,12 @@
 # FFICallLogger
 
-Inspect Pharo TFFI calls using Beacon to record, and Spec2 inspectors to explore in UI.
+[![License](https://img.shields.io/github/license/tinchodias/FFICallLogger.svg)](./LICENSE)
+[![Tests](https://github.com/tinchodias/FFICallLogger/actions/workflows/test.yml/badge.svg)](https://github.com/tinchodias/FFICallLogger/actions/workflows/test.yml)
+
+A tool set to inspect Pharo FFI calls.
 
 Please check the [Wiki](../../wiki) for more information.
 
 ## License
 
-The code is licensed under MIT.
+This code is licensed under the [MIT license](./LICENSE).
