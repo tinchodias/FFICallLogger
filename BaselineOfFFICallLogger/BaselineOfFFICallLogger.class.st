@@ -21,6 +21,6 @@ BaselineOfFFICallLogger >> baseline: spec [
 				package: 'FFICallLogger-UI-Spec2'
 					with: [ spec requires: #('FFICallLogger-UI') ];
 				package: 'FFICallLogger-UI-Spec2-Tests'
-					with: [ spec requires: #('FFICallLogger-UI-Spec2-Tests') ];
+					with: [ spec requires: #('FFICallLogger-UI-Spec2') ];
 				yourself ]
 ]
