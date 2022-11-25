@@ -93,7 +93,10 @@ TFLCallLogger >> addFilterSignalsLike: aTFLSignal [
 { #category : #private }
 TFLCallLogger >> announceChanged [
 
-	self announcer announce: (ValueChanged newValue: self)
+	"Workaround as this message is sent during initialization."
+	announcer ifNil: [ ^self ].
+
+	announcer announce: (ValueChanged newValue: self)
 ]
 
 { #category : #initialization }
