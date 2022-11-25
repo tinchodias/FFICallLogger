@@ -18,27 +18,24 @@ Class {
 		'microsecondClockValue',
 		'processId'
 	],
+	#classInstVars : [
+		'ffiInvokerMetalink'
+	],
 	#category : #'FFICallLogger-Core'
 }
 
-{ #category : #convenience }
-TFLSignal class >> browseInstallingMethod [
-	"Open a browser on the ThreadedFFI method where this logger installs."
+{ #category : #installation }
+TFLSignal class >> ffiInvokerASTNode [
 
-	<script>
-	(TFSameThreadRunner>>#invokeFunction:withArguments:) browse
+	^ self ffiInvokerMethod ast body statements last
 ]
 
 { #category : #convenience }
-TFLSignal class >> emitFromRunner: aTFSameThreadRunner function: function arguments: aCollection answer: answer [
-	"Convenience method that creates and emits an instance of this class.
-	IMPORTANT: it assumes it's sent from TFSameThreadCall>>#executeOn:withArguments:."
+TFLSignal class >> ffiInvokerMethod [
+	"Answer the ThreadedFFI method where this signal installs."
+	<script: 'self ffiInvokerMethod browse'>
 
-	(self
-		function: function
-		arguments: aCollection
-		answer: (answer == aTFSameThreadRunner ifTrue: [ TFLNoAnswer instance ] ifFalse: [ answer ])
-		stack: (thisContext stack allButFirst: 2)) emit.
+	^ TFSameThreadRunner>>#invokeFunction:withArguments:
 ]
 
 { #category : #'instance creation' }
@@ -52,31 +49,60 @@ TFLSignal class >> function: aFunction arguments: aCollection answer: anObject s
 		  yourself
 ]
 
+{ #category : #initialization }
+TFLSignal class >> initialize [
+
+	ffiInvokerMetalink := MetaLink new
+		metaObject: [ :c :answer |
+			| answerOrNoAnswer relevantStack aSignal |
+
+			"Nasty way to detect void-returning calls"
+			answerOrNoAnswer :=
+				answer class = TFSameThreadCall
+					ifTrue: [ TFLNoAnswer instance ]
+					ifFalse: [ answer ].
+
+			"Reject runner's invokeFunction"
+			relevantStack := c stack allButFirst: 1.
+
+			aSignal := TFLSignal
+				function: (c tempNamed: #aTFExternalFunction)
+				arguments: (c tempNamed: #aCollection)
+				answer: answerOrNoAnswer
+				stack: relevantStack.
+			
+			aSignal emit ];
+		arguments: #(context value);
+		selector: #value:value:;
+		options: #(- optionCompileOnLinkInstallation);
+		control: #before;
+		yourself
+
+]
+
 { #category : #installation }
 TFLSignal class >> install [
 	<script>
 
-	TFSameThreadRunner compile: 
-'invokeFunction: function withArguments: aCollection 
-	| answer |
-	function validate.
-	answer := self primitivePerformWorkerCall: function withArguments: aCollection.
-	TFLSignal emitFromRunner: self function: function arguments: aCollection answer: answer.
-	^ answer'
+	self isInstalled ifFalse: [
+		self ffiInvokerASTNode link: ffiInvokerMetalink ]
+]
 
+{ #category : #installation }
+TFLSignal class >> isInstalled [
+	"
+	self isInstalled
+	"
+
+	^ self ffiInvokerASTNode hasMetalink: ffiInvokerMetalink
 ]
 
 { #category : #installation }
 TFLSignal class >> uninstall [
 	<script>
 
-	TFSameThreadRunner compile: 
-'invokeFunction: function withArguments: aCollection 
-
-	function validate.	
-	^ self primitivePerformWorkerCall: function withArguments: aCollection 
-	'
-
+	self isInstalled ifTrue: [
+		self ffiInvokerASTNode removeLink: ffiInvokerMetalink ]
 ]
 
 { #category : #accessing }
