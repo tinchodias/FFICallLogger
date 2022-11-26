@@ -1,5 +1,14 @@
 "
-I'm a Beacon logger for `TFLSignal` to a waitfree queue.
+I'm a tool to list the FFI calls performed on image startup.
+
+Easy steps to use it:
+
+1. Open the Pharo image from a terminal.
+2. Customize `TFLSessionCallsLogger class>>#script` and `TFLSessionCallsLogger>>#shouldLog:`.
+3. Evaluate `TFLSessionCallsLogger prepareAndQuit` to start recording and quit the image. 
+4. Copy the `pharo-ui` command written on stdout.
+5. Paste and execute it on the terminal.
+6. Check a file that is created on the current working directory, with the recorded calls.
 
 "
 Class {
@@ -124,17 +133,10 @@ TFLSessionCallsLogger >> nextPut: aTFLSignal [
 { #category : #testing }
 TFLSessionCallsLogger >> shouldLog: aTFLSignal [
 
-	| banned |
-	banned := #( SDL_PollEvent SDL_GetWindowSize 
-	
-	SDL_LockTexture
-SDL_UnlockTexture
-SDL_RenderCopy
-SDL_RenderPresent
+	| bannedFunctionNames |
+	bannedFunctionNames := #( "SDL_PollEvent" ).
 
-).
-
-	^ (banned includes: aTFLSignal functionName) not
+	^ (bannedFunctionNames includes: aTFLSignal functionName) not
 ]
 
 { #category : #accessing }

@@ -69,12 +69,12 @@ TFLCallsPerSecondTracer >> stop [
 ]
 
 { #category : #tracing }
-TFLCallsPerSecondTracer >> trace: aTFLCallPerLapseAnnouncement [
+TFLCallsPerSecondTracer >> trace: aTFLFunctionCyclicCounterAnnouncement [
 
 	| rows |
 	rows := Array streamContents: [ :stream |
 		stream nextPut: #('#' 'calls/s').
-		aTFLCallPerLapseAnnouncement functionNamesAndCountsAdjusted
+		aTFLFunctionCyclicCounterAnnouncement functionNamesAndCountsAdjusted
 			do: [ :each |
 				stream nextPut: {
 					each first.
