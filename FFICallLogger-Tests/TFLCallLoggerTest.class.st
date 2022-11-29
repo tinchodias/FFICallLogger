@@ -40,6 +40,18 @@ TFLCallLoggerTest >> tearDown [
 ]
 
 { #category : #tests }
+TFLCallLoggerTest >> testDontLogWhenStopped [
+	
+	| logger |
+	logger := TFLCallLogger new.
+	logger start.
+	logger stop.
+	self doMemcpyCall.
+
+	self assertEmpty: (self selectMemcpyCallsFrom: logger recordings)
+]
+
+{ #category : #tests }
 TFLCallLoggerTest >> testInstance [
 	
 	TFLCallLogger instance start.
@@ -51,18 +63,7 @@ TFLCallLoggerTest >> testInstance [
 ]
 
 { #category : #tests }
-TFLCallLoggerTest >> testResetInstance [
-	
-	TFLCallLogger instance start.
-	self doMemcpyCall.
-	TFLCallLogger instance stop.
-	TFLCallLogger resetInstance.
-
-	self assertEmpty: TFLCallLogger instance recordings
-]
-
-{ #category : #tests }
-TFLCallLoggerTest >> testStart [
+TFLCallLoggerTest >> testLogWhenStarted [
 	
 	| logger |
 	logger := TFLCallLogger new.
@@ -74,13 +75,12 @@ TFLCallLoggerTest >> testStart [
 ]
 
 { #category : #tests }
-TFLCallLoggerTest >> testStop [
+TFLCallLoggerTest >> testResetInstance [
 	
-	| logger |
-	logger := TFLCallLogger new.
-	logger start.
-	logger stop.
+	TFLCallLogger instance start.
 	self doMemcpyCall.
+	TFLCallLogger instance stop.
+	TFLCallLogger resetInstance.
 
-	self assertEmpty: (self selectMemcpyCallsFrom: logger recordings)
+	self assertEmpty: TFLCallLogger instance recordings
 ]

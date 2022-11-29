@@ -8,7 +8,7 @@ Class {
 }
 
 { #category : #tests }
-TFLMainPresenterTest >> testOpen [
+TFLMainPresenterTest >> testOpenAndClose [
 
 	| aWindow |
 	aWindow := TFLMainPresenter open.
