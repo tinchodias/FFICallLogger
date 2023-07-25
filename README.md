@@ -5,7 +5,7 @@
 
 A tool set to log, filter and inspect execution of FFI calls in [Pharo](http://pharo.org/).
 
-Please check the [Wiki](../../wiki) for more information.
+👉 Check the [project's wiki](../../wiki) for usage and loading information.
 
 ## License
 
