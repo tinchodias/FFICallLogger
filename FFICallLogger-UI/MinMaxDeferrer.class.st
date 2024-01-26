@@ -82,11 +82,10 @@ MinMaxDeferrer >> defaultProcessPriority [
 
 { #category : #scheduling }
 MinMaxDeferrer >> flush [
+	"Execute deferred action and clean up"
 
 	process ifNotNil: [
-		"Execute deferred action and clean up"
-		[ valuable value ] ensure: [ process := nil ] 
-	].
+		[ valuable value ] ensure: [ process := nil ] ]
 ]
 
 { #category : #scheduling }
@@ -111,7 +110,7 @@ MinMaxDeferrer >> initializeWith: aValuable minDeferral: aDuration maxDeferral: 
 	maxDeferral := anotherDuration.
 	
 	processPriority := self defaultProcessPriority.
-	processName := self defaultProcessName.
+	processName := self defaultProcessName
 ]
 
 { #category : #accessing }
@@ -157,9 +156,9 @@ MinMaxDeferrer >> processPriority [
 ]
 
 { #category : #accessing }
-MinMaxDeferrer >> processPriority: anObject [
+MinMaxDeferrer >> processPriority: aNumber [
 
-	processPriority := anObject
+	processPriority := aNumber
 ]
 
 { #category : #scheduling }
@@ -168,7 +167,7 @@ MinMaxDeferrer >> schedule [
 	lastSchedule := DateAndTime now.
 	process ifNil: [ 
 		firstSchedule := lastSchedule.
-		DefaultExecutionEnvironment beActiveDuring: [ self forkDelayProcess ]]
+		DefaultExecutionEnvironment beActiveDuring: [ self forkDelayProcess ] ]
 ]
 
 { #category : #accessing }
