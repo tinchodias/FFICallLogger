@@ -23,14 +23,15 @@ Class {
 	#superclass : #Object,
 	#instVars : [
 		'process',
-		'lastSchedule',
 		'object',
-		'firstSchedule',
-		'minDeferral',
-		'maxDeferral',
 		'processPriority',
 		'processName',
-		'valuable'
+		'valuable',
+		'minDeferralMS',
+		'maxDeferralMS',
+		'lastScheduleMS',
+		'firstScheduleMS',
+		'scheduleSemaphore'
 	],
 	#category : #'FFICallLogger-UI'
 }
@@ -59,13 +60,28 @@ MinMaxDeferrer class >> shutDown: quitting [
 ]
 
 { #category : #'instance creation' }
-MinMaxDeferrer class >> value: aMessageSend notBefore: aDuration notAfter: anotherDuration [
+MinMaxDeferrer class >> value: aValuable minMSDeferral: minMS maxMSDeferral: maxMS [
 
 	^ self basicNew
-		  initializeWith: aMessageSend
-		  minDeferral: aDuration
-		  maxDeferral: anotherDuration;
+		  initializeWith: aValuable
+		  minMSDeferral: minMS
+		  maxMSDeferral: maxMS;
 		  yourself
+]
+
+{ #category : #'instance creation' }
+MinMaxDeferrer class >> value: aValuable notBefore: aDuration notAfter: anotherDuration [
+
+	^ self
+		  value: aValuable
+		  minMSDeferral: aDuration asMilliSeconds
+		  maxMSDeferral: anotherDuration asMilliSeconds
+]
+
+{ #category : #accessing }
+MinMaxDeferrer >> currentMS [
+
+	^ Time millisecondClockValue
 ]
 
 { #category : #accessing }
@@ -88,13 +104,13 @@ MinMaxDeferrer >> flush [
 		[ valuable value ] ensure: [ process := nil ] ]
 ]
 
-{ #category : #scheduling }
+{ #category : #private }
 MinMaxDeferrer >> forkDelayProcess [
 
 	process := [
 		"Loop until enough time passed since last #schedule"
-		[ DateAndTime now < (lastSchedule + minDeferral min: firstSchedule + maxDeferral) ]
-			whileTrue: [ minDeferral wait ].
+		[ self currentMS < (lastScheduleMS + minDeferralMS min: firstScheduleMS + maxDeferralMS) ]
+				whileTrue: [ self waitMS: minDeferralMS ].
 		
 		"Execute the deferred action (if not done before) and clean up"
 		self flush.
@@ -102,39 +118,22 @@ MinMaxDeferrer >> forkDelayProcess [
 ]
 
 { #category : #initialization }
-MinMaxDeferrer >> initializeWith: aValuable minDeferral: aDuration maxDeferral: anotherDuration [
+MinMaxDeferrer >> initializeWith: aValuable minMSDeferral: minMS maxMSDeferral: maxMS [
 
 	self initialize.
 	valuable := aValuable.
-	minDeferral := aDuration.
-	maxDeferral := anotherDuration.
-	
+	minDeferralMS := minMS.
+	maxDeferralMS := maxMS.
+	scheduleSemaphore := Semaphore new.
+		
 	processPriority := self defaultProcessPriority.
 	processName := self defaultProcessName
 ]
 
-{ #category : #accessing }
-MinMaxDeferrer >> maxDeferral [
+{ #category : #testing }
+MinMaxDeferrer >> isScheduled [
 
-	^ maxDeferral
-]
-
-{ #category : #accessing }
-MinMaxDeferrer >> maxDeferral: aDuration [
-
-	maxDeferral := aDuration
-]
-
-{ #category : #accessing }
-MinMaxDeferrer >> minDeferral [
-
-	^ minDeferral
-]
-
-{ #category : #accessing }
-MinMaxDeferrer >> minDeferral: aDuration [
-
-	minDeferral := aDuration
+	^ process isNotNil
 ]
 
 { #category : #accessing }
@@ -164,9 +163,9 @@ MinMaxDeferrer >> processPriority: aNumber [
 { #category : #scheduling }
 MinMaxDeferrer >> schedule [
 
-	lastSchedule := DateAndTime now.
+	lastScheduleMS := self currentMS.
 	process ifNil: [ 
-		firstSchedule := lastSchedule.
+		firstScheduleMS := lastScheduleMS.
 		DefaultExecutionEnvironment beActiveDuring: [ self forkDelayProcess ] ]
 ]
 
@@ -180,4 +179,10 @@ MinMaxDeferrer >> valuable [
 MinMaxDeferrer >> valuable: aValuable [
 
 	valuable := aValuable
+]
+
+{ #category : #private }
+MinMaxDeferrer >> waitMS: aNumberOfMS [
+
+	scheduleSemaphore waitTimeoutMilliseconds: aNumberOfMS
 ]
