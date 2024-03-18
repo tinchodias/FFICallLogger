@@ -1,1 +1,1 @@
-Package { #name : #FFICallLogger }
+Package { #name : 'FFICallLogger' }

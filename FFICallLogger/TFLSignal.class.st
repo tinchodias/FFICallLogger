@@ -7,8 +7,8 @@ My instances have two states: ""initialized"" and ""prepared"". The method `TFLS
 
 "
 Class {
-	#name : #TFLSignal,
-	#superclass : #Announcement,
+	#name : 'TFLSignal',
+	#superclass : 'Announcement',
 	#instVars : [
 		'arguments',
 		'answer',
@@ -21,10 +21,12 @@ Class {
 	#classInstVars : [
 		'ffiInvokerMetalink'
 	],
-	#category : #'FFICallLogger-Core'
+	#category : 'FFICallLogger-Core',
+	#package : 'FFICallLogger',
+	#tag : 'Core'
 }
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 TFLSignal class >> emitWithContext: aContext answer: callAnswer voidCallClassName: aClassName functionTempName: functionTempVariableName argumentsTempName: argumentsTempVariableName [
 
 	| answerOrNoAnswer relevantStack aSignal |
@@ -47,7 +49,7 @@ TFLSignal class >> emitWithContext: aContext answer: callAnswer voidCallClassNam
 	aSignal emit
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 TFLSignal class >> emitWithContext: aContext answerAfterPharo11: callAnswer [
 
 	self
@@ -58,7 +60,7 @@ TFLSignal class >> emitWithContext: aContext answerAfterPharo11: callAnswer [
 		argumentsTempName: #aCollection
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 TFLSignal class >> emitWithContext: aContext answerBeforePharo11: callAnswer [
 
 	self
@@ -70,13 +72,13 @@ TFLSignal class >> emitWithContext: aContext answerBeforePharo11: callAnswer [
 
 ]
 
-{ #category : #installation }
+{ #category : 'installation' }
 TFLSignal class >> ffiInvokerASTNode [
 
 	^ self ffiInvokerMethod ast body statements last
 ]
 
-{ #category : #convenience }
+{ #category : 'convenience' }
 TFLSignal class >> ffiInvokerMethod [
 	"Answer the ThreadedFFI method where this signal installs."
 	<script: 'self ffiInvokerMethod browse'>
@@ -84,7 +86,7 @@ TFLSignal class >> ffiInvokerMethod [
 	^ TFSameThreadRunner>>#invokeFunction:withArguments:
 ]
 
-{ #category : #'instance creation' }
+{ #category : 'instance creation' }
 TFLSignal class >> function: aFunction arguments: aCollection answer: anObject stack: anArrayOfContexts [
 
 	^ self basicNew
@@ -95,7 +97,7 @@ TFLSignal class >> function: aFunction arguments: aCollection answer: anObject s
 		  yourself
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 TFLSignal class >> initialize [
 
 	ffiInvokerMetalink := MetaLink new
@@ -108,7 +110,7 @@ TFLSignal class >> initialize [
 
 ]
 
-{ #category : #installation }
+{ #category : 'installation' }
 TFLSignal class >> install [
 	<script>
 
@@ -116,7 +118,7 @@ TFLSignal class >> install [
 		self ffiInvokerASTNode link: ffiInvokerMetalink ]
 ]
 
-{ #category : #installation }
+{ #category : 'installation' }
 TFLSignal class >> isInstalled [
 	"
 	self isInstalled
@@ -125,7 +127,7 @@ TFLSignal class >> isInstalled [
 	^ self ffiInvokerASTNode hasMetalink: ffiInvokerMetalink
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 TFLSignal class >> metalinkSelectorAccordingToPharoVersion [
 
 	^ SystemVersion current major < 11
@@ -133,7 +135,7 @@ TFLSignal class >> metalinkSelectorAccordingToPharoVersion [
 		ifFalse: [ #emitWithContext:answerAfterPharo11: ]
 ]
 
-{ #category : #installation }
+{ #category : 'installation' }
 TFLSignal class >> uninstall [
 	<script>
 
@@ -141,30 +143,30 @@ TFLSignal class >> uninstall [
 		self ffiInvokerASTNode removeLink: ffiInvokerMetalink ]
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 TFLSignal >> answer [
 
 	^ answer
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 TFLSignal >> arguments [
 
 	^ arguments
 ]
 
-{ #category : #converting }
+{ #category : 'converting' }
 TFLSignal >> asBeaconSignal [
 	^ self
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 TFLSignal >> functionName [
 
 	^ functionName
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 TFLSignal >> initializeWithFunction: aFunction arguments: aCollection answer: anObject stack: anArrayOfContexts [
 
 	self initialize.
@@ -177,25 +179,25 @@ TFLSignal >> initializeWithFunction: aFunction arguments: aCollection answer: an
 	stack := anArrayOfContexts
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 TFLSignal >> moduleName [
 
 	^ moduleName
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 TFLSignal >> name [
 
 	^ 'FFI Call'
 ]
 
-{ #category : #printing }
+{ #category : 'printing' }
 TFLSignal >> oneLineContents [
 
 	^ String streamContents: [ :s | self printOneLineContentsOn: s ]
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 TFLSignal >> prepareAsRecording [
 	"Copy collaborators as an 'immutable' objects."
 
@@ -203,13 +205,13 @@ TFLSignal >> prepareAsRecording [
 	answer := answer asTFLRecording.
 ]
 
-{ #category : #printing }
+{ #category : 'printing' }
 TFLSignal >> printOn: stream [
 
 	self printOneLineContentsOn: stream
 ]
 
-{ #category : #printing }
+{ #category : 'printing' }
 TFLSignal >> printOneLineContentsOn: aStream [
 
 	aStream
@@ -227,32 +229,32 @@ TFLSignal >> printOneLineContentsOn: aStream [
 "
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 TFLSignal >> processId [
 
 	^ processId
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 TFLSignal >> sender [
 	"Answer the CompiledMethod that performed the call."
 
 	^ stack first method
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 TFLSignal >> shortModuleName [
 
 	^ moduleName asPath basenameWithoutExtension
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 TFLSignal >> stack [
 
 	^ stack
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 TFLSignal >> timestamp [
 	
 	^ DateAndTime fromMicrosecondClockValue: microsecondClockValue

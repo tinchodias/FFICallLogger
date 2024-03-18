@@ -1,6 +1,6 @@
-Extension { #name : #DateAndTime }
+Extension { #name : 'DateAndTime' }
 
-{ #category : #'*FFICallLogger' }
+{ #category : '*FFICallLogger' }
 DateAndTime class >> fromMicrosecondClockValue: anInteger [
 
 	| nanoTicks |

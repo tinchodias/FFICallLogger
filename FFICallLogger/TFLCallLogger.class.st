@@ -18,30 +18,32 @@ Other useful statements:
 ```
 "
 Class {
-	#name : #TFLCallLogger,
-	#superclass : #CircularMemoryLogger,
+	#name : 'TFLCallLogger',
+	#superclass : 'CircularMemoryLogger',
 	#instVars : [
 		'filters',
 		'numberOfFilteredSignals'
 	],
-	#category : #'FFICallLogger-Core'
+	#category : 'FFICallLogger-Core',
+	#package : 'FFICallLogger',
+	#tag : 'Core'
 }
 
-{ #category : #'system startup' }
+{ #category : 'system startup' }
 TFLCallLogger class >> startUp: resuming [
 	"If starting the image, all external addresses should be zero then we remove them."
 
 	resuming ifTrue: [ self resetInstance ]
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 TFLCallLogger >> addFilter: aClosureThatReceivesSignalAndAnswersBoolean [
 
 	filters := filters copyWith: aClosureThatReceivesSignalAndAnswersBoolean.
 	self announceChanged.
 ]
 
-{ #category : #convenience }
+{ #category : 'convenience' }
 TFLCallLogger >> addFilter: accessor deny: value [
 	"Add a filter like '[ :signal | signal <accessor> ~= <value> ]'"
 
@@ -51,7 +53,7 @@ TFLCallLogger >> addFilter: accessor deny: value [
 
 ]
 
-{ #category : #convenience }
+{ #category : 'convenience' }
 TFLCallLogger >> addFilter: accessor equals: value [
 	"Add a filter like '[ :signal | signal <accessor> = <value> ]'"
 
@@ -60,7 +62,7 @@ TFLCallLogger >> addFilter: accessor equals: value [
 	self addFilterByCompiling: body
 ]
 
-{ #category : #convenience }
+{ #category : 'convenience' }
 TFLCallLogger >> addFilterByCompiling: body [
 	"Add a filter like '[ :signal | <body> ]'"
 
@@ -72,7 +74,7 @@ TFLCallLogger >> addFilterByCompiling: body [
 
 ]
 
-{ #category : #convenience }
+{ #category : 'convenience' }
 TFLCallLogger >> addFilterHasArgumentLike: value [
 	"Add a filter for calls with at least one argument that converted to string equals to <value> as string."
 
@@ -82,7 +84,7 @@ TFLCallLogger >> addFilterHasArgumentLike: value [
 	self addFilterByCompiling: body
 ]
 
-{ #category : #convenience }
+{ #category : 'convenience' }
 TFLCallLogger >> addFilterSignalsLike: aTFLSignal [ 
 	
 	| body |
@@ -90,7 +92,7 @@ TFLCallLogger >> addFilterSignalsLike: aTFLSignal [
 	self addFilterByCompiling: body
 ]
 
-{ #category : #private }
+{ #category : 'private' }
 TFLCallLogger >> announceChanged [
 
 	"Workaround as this message is sent during initialization."
@@ -99,7 +101,7 @@ TFLCallLogger >> announceChanged [
 	announcer announce: (ValueChanged newValue: self)
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 TFLCallLogger >> basicReset [
 
 	super basicReset.
@@ -107,20 +109,20 @@ TFLCallLogger >> basicReset [
 	self announceChanged.
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 TFLCallLogger >> filters [
 
 	^ filters
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 TFLCallLogger >> filters: aCollection [
 
 	filters := aCollection.
 	self announceChanged.
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 TFLCallLogger >> initialize [ 
 
 	super initialize.
@@ -128,7 +130,7 @@ TFLCallLogger >> initialize [
 	self resetFilteredSignals.
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 TFLCallLogger >> nextPut: aTFLSignal [
 
 	aTFLSignal prepareAsRecording. "TODO: argument filtering need to prepare not-lazily"
@@ -142,13 +144,13 @@ TFLCallLogger >> nextPut: aTFLSignal [
 
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 TFLCallLogger >> numberOfFilteredSignals [
 
 	^ numberOfFilteredSignals
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 TFLCallLogger >> removeFilter: aUnaryBlockClosure [
 	"Remove a filter. We support sending this message from a closure iterating the filters."
 
@@ -156,20 +158,20 @@ TFLCallLogger >> removeFilter: aUnaryBlockClosure [
 	self announceChanged.
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 TFLCallLogger >> resetFilteredSignals [
 
 	numberOfFilteredSignals := 0.
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 TFLCallLogger >> resetFilters [
 
 	filters := {}.
 	self announceChanged.
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 TFLCallLogger >> shouldRecord: aSignal [
 
 	^ filters noneSatisfy: [ :each |
@@ -181,14 +183,14 @@ TFLCallLogger >> shouldRecord: aSignal [
 
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 TFLCallLogger >> start [
 
 	self startFor: TFLSignal.
 	self announceChanged
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 TFLCallLogger >> stop [
 
 	super stop.

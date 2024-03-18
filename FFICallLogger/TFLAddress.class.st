@@ -5,13 +5,15 @@ A bit more precisely: I'm a copy of the address that isn't supposed to change fo
 
 "
 Class {
-	#name : #TFLAddress,
-	#superclass : #ByteArray,
-	#type : #bytes,
-	#category : #'FFICallLogger-Recordings'
+	#name : 'TFLAddress',
+	#superclass : 'ByteArray',
+	#type : 'bytes',
+	#category : 'FFICallLogger-Recordings',
+	#package : 'FFICallLogger',
+	#tag : 'Recordings'
 }
 
-{ #category : #'instance creation' }
+{ #category : 'instance creation' }
 TFLAddress class >> newFrom: anExternalAddress [
 
 	| sz |
@@ -21,14 +23,14 @@ TFLAddress class >> newFrom: anExternalAddress [
 		yourself
 ]
 
-{ #category : #printing }
+{ #category : 'printing' }
 TFLAddress >> asString [
 	"Answer a string that represents the receiver."
 
 	^ self printString
 ]
 
-{ #category : #printing }
+{ #category : 'printing' }
 TFLAddress >> printOn: aStream [
 	"Print a lowercase hexadecimal String representation of my 4 higher bytes, prefixed by @."
 

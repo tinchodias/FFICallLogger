@@ -15,23 +15,25 @@ a Dictionary [8 items] (#SDL_GetModState->62 #SDL_GetMouseState->34 #SDL_GetWind
 ```
 "
 Class {
-	#name : #TFLFunctionCounter,
-	#superclass : #SignalLogger,
+	#name : 'TFLFunctionCounter',
+	#superclass : 'SignalLogger',
 	#instVars : [
 		'queue',
 		'bagOfFunctionNames'
 	],
-	#category : #'FFICallLogger-Counter'
+	#category : 'FFICallLogger-Counter',
+	#package : 'FFICallLogger',
+	#tag : 'Counter'
 }
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 TFLFunctionCounter >> functionNamesAndCounts [
 
 	self process.
 	^ bagOfFunctionNames valuesAndCounts
 ]
 
-{ #category : #registering }
+{ #category : 'registering' }
 TFLFunctionCounter >> initialize [
 
 	super initialize.
@@ -40,14 +42,14 @@ TFLFunctionCounter >> initialize [
 	bagOfFunctionNames := Bag new.
 ]
 
-{ #category : #registering }
+{ #category : 'registering' }
 TFLFunctionCounter >> nextPut: aTFLSignal [
 	"Store fast in a waitfree collection. To be processed on demand."
 	
 	queue nextPut: aTFLSignal functionName
 ]
 
-{ #category : #API }
+{ #category : 'API' }
 TFLFunctionCounter >> process [
 
 	| queueToProcess |
@@ -62,7 +64,7 @@ TFLFunctionCounter >> process [
 
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 TFLFunctionCounter >> start [
 
 	self startFor: TFLSignal

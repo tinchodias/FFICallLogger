@@ -32,23 +32,25 @@ Now, `Transcript` should be showing something like:
 
 "
 Class {
-	#name : #TFLFunctionCyclicCounter,
-	#superclass : #Object,
+	#name : 'TFLFunctionCyclicCounter',
+	#superclass : 'Object',
 	#instVars : [
 		'announcer',
 		'delay',
 		'loopProcess'
 	],
-	#category : #'FFICallLogger-Counter'
+	#category : 'FFICallLogger-Counter',
+	#package : 'FFICallLogger',
+	#tag : 'Counter'
 }
 
-{ #category : #'instance creation' }
+{ #category : 'instance creation' }
 TFLFunctionCyclicCounter class >> newEvery: aDuration [
 
 	^ self newEveryMilliseconds: aDuration asMilliSeconds
 ]
 
-{ #category : #'instance creation' }
+{ #category : 'instance creation' }
 TFLFunctionCyclicCounter class >> newEveryMilliseconds: msToWait [
 
 	^ self basicNew
@@ -56,13 +58,13 @@ TFLFunctionCyclicCounter class >> newEveryMilliseconds: msToWait [
 		  yourself
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 TFLFunctionCyclicCounter >> announcer [
 
 	^ announcer
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 TFLFunctionCyclicCounter >> forkLoopProcess [
 
 	loopProcess := [
@@ -95,7 +97,7 @@ TFLFunctionCyclicCounter >> forkLoopProcess [
 
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 TFLFunctionCyclicCounter >> initializeWithMilliseconds: millisecondsToWait [
 
 	self initialize.
@@ -104,7 +106,7 @@ TFLFunctionCyclicCounter >> initializeWithMilliseconds: millisecondsToWait [
 	delay := Delay forMilliseconds: millisecondsToWait.
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 TFLFunctionCyclicCounter >> start [
 
 	"Ensure installed on the system"
@@ -114,7 +116,7 @@ TFLFunctionCyclicCounter >> start [
 
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 TFLFunctionCyclicCounter >> stop [
 
 	loopProcess ifNil: [ ^self ].

@@ -2,42 +2,44 @@
 I represent a completed cycle in a `TFLFunctionCyclicCounter`, and hold the relevant information.
 "
 Class {
-	#name : #TFLFunctionCyclicCounterAnnouncement,
-	#superclass : #Announcement,
+	#name : 'TFLFunctionCyclicCounterAnnouncement',
+	#superclass : 'Announcement',
 	#instVars : [
 		'functionNamesAndCounts',
 		'waitedMS',
 		'stopMS',
 		'startMS'
 	],
-	#category : #'FFICallLogger-Counter'
+	#category : 'FFICallLogger-Counter',
+	#package : 'FFICallLogger',
+	#tag : 'Counter'
 }
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 TFLFunctionCyclicCounterAnnouncement >> countMSRatio [
 
 	^ waitedMS / self elapsedMS asFloat
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 TFLFunctionCyclicCounterAnnouncement >> elapsedMS [
 
 	^ stopMS - startMS
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 TFLFunctionCyclicCounterAnnouncement >> functionNamesAndCounts [
 
 	^ functionNamesAndCounts
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 TFLFunctionCyclicCounterAnnouncement >> functionNamesAndCounts: anObject [
 
 	functionNamesAndCounts := anObject
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 TFLFunctionCyclicCounterAnnouncement >> functionNamesAndCountsAdjusted [
 
 	| rows |
@@ -49,37 +51,37 @@ TFLFunctionCyclicCounterAnnouncement >> functionNamesAndCountsAdjusted [
 	^ rows	
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 TFLFunctionCyclicCounterAnnouncement >> startMS [
 
 	^ startMS
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 TFLFunctionCyclicCounterAnnouncement >> startMS: anObject [
 
 	startMS := anObject
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 TFLFunctionCyclicCounterAnnouncement >> stopMS [
 
 	^ stopMS
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 TFLFunctionCyclicCounterAnnouncement >> stopMS: anObject [
 
 	stopMS := anObject
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 TFLFunctionCyclicCounterAnnouncement >> waitedMS [
 
 	^ waitedMS
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 TFLFunctionCyclicCounterAnnouncement >> waitedMS: anObject [
 
 	waitedMS := anObject
