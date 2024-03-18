@@ -12,18 +12,16 @@ Easy steps to use it:
 
 "
 Class {
-	#name : 'TFLSessionCallsLogger',
-	#superclass : 'SignalLogger',
+	#name : #TFLSessionCallsLogger,
+	#superclass : #SignalLogger,
 	#instVars : [
 		'signalsWaitfreeQueue',
 		'session'
 	],
-	#category : 'FFICallLogger-Core',
-	#package : 'FFICallLogger',
-	#tag : 'Core'
+	#category : #'FFICallLogger-Core'
 }
 
-{ #category : 'installation' }
+{ #category : #installation }
 TFLSessionCallsLogger class >> logToFileAndQuit [
 	<script>
 
@@ -41,7 +39,7 @@ Log file written:
 
 ]
 
-{ #category : 'installation' }
+{ #category : #installation }
 TFLSessionCallsLogger class >> prepareAndQuit [
 	<script>
 
@@ -62,7 +60,7 @@ Log with something like:
 	Smalltalk snapshot: true andQuit: true.
 ]
 
-{ #category : 'installation' }
+{ #category : #installation }
 TFLSessionCallsLogger class >> script [
 
 [
@@ -84,7 +82,7 @@ s := World worldState worldRenderer actualScreenSize.
 			self logToFileAndQuit.] fork
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 TFLSessionCallsLogger >> ensureQueueForCurrentSession [
 
 	(signalsWaitfreeQueue notNil and: [ session = SessionManager default currentSession ])
@@ -95,7 +93,7 @@ TFLSessionCallsLogger >> ensureQueueForCurrentSession [
 
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 TFLSessionCallsLogger >> flushSignals [
 	"Answer the recorded signals, and flush internal collection."
 
@@ -107,7 +105,7 @@ TFLSessionCallsLogger >> flushSignals [
 	^ results
 ]
 
-{ #category : 'writing' }
+{ #category : #writing }
 TFLSessionCallsLogger >> flushSignalsToNewFile [
 
 	| aFileReference |
@@ -121,7 +119,7 @@ TFLSessionCallsLogger >> flushSignalsToNewFile [
 
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 TFLSessionCallsLogger >> nextPut: aTFLSignal [
 
 	(self shouldLog: aTFLSignal) ifFalse: [ ^ self ].
@@ -132,7 +130,7 @@ TFLSessionCallsLogger >> nextPut: aTFLSignal [
 	signalsWaitfreeQueue nextPut: aTFLSignal
 ]
 
-{ #category : 'testing' }
+{ #category : #testing }
 TFLSessionCallsLogger >> shouldLog: aTFLSignal [
 
 	| bannedFunctionNames |
@@ -141,14 +139,14 @@ TFLSessionCallsLogger >> shouldLog: aTFLSignal [
 	^ (bannedFunctionNames includes: aTFLSignal functionName) not
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 TFLSessionCallsLogger >> start [
 
 	TFLSignal install.
 	self startFor: TFLSignal
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 TFLSessionCallsLogger >> stop [
 
 	super stop.

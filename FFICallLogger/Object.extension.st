@@ -1,6 +1,6 @@
-Extension { #name : 'Object' }
+Extension { #name : #Object }
 
-{ #category : '*FFICallLogger' }
+{ #category : #'*FFICallLogger' }
 Object >> asTFLRecording [
 
 	^ self

@@ -1,6 +1,6 @@
-Extension { #name : 'ExternalAddress' }
+Extension { #name : #ExternalAddress }
 
-{ #category : '*FFICallLogger' }
+{ #category : #'*FFICallLogger' }
 ExternalAddress >> asTFLRecording [
 	"Self is mutated on free as null, so answer a new object that won't change."
 
