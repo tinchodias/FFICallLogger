@@ -172,7 +172,7 @@ TFLSignal >> initializeWithFunction: aFunction arguments: aCollection answer: an
 	microsecondClockValue := DateAndTime clock microsecondClockValue.
 
 	processId := Processor activeProcess name.
-	moduleName := aFunction moduleName.
+	moduleName := aFunction moduleName tflPathBaseName.
 	functionName := aFunction functionName.
 	arguments := aCollection.
 	answer := anObject.
@@ -240,12 +240,6 @@ TFLSignal >> sender [
 	"Answer the CompiledMethod that performed the call."
 
 	^ stack first method
-]
-
-{ #category : #accessing }
-TFLSignal >> shortModuleName [
-
-	^ moduleName asPath basenameWithoutExtension
 ]
 
 { #category : #accessing }
