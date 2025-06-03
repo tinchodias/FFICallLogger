@@ -255,5 +255,5 @@ TFLSignal >> stack [
 { #category : #accessing }
 TFLSignal >> timestamp [
 	
-	^ DateAndTime fromMicrosecondClockValue: microsecondClockValue
+	^ DateAndTime tflFromMicrosecondClockValue: microsecondClockValue
 ]
