@@ -1,10 +1,9 @@
 "
 I'm a Beacon signal with information about a ThreadedFFI call that was just executed.
 
-A started `TFLCallLogger` instance records me. Browse its class comment for more information.
+My instances are typically aggragated by a `TFLCallLogger`. Browse its class comment for more information.
 
 My instances have two states: ""initialized"" and ""prepared"". The method `TFLSignal>>#prepareAsRecording` mutates an instance as a kind of snapshot, so posterior modifications on the original FFI call object are not lost. This is a performance optimization, to avoid preparing instances that are filtered.
-
 "
 Class {
 	#name : #TFLSignal,
@@ -168,7 +167,10 @@ TFLSignal >> functionName [
 TFLSignal >> initializeWithFunction: aFunction arguments: aCollection answer: anObject stack: anArrayOfContexts [
 
 	self initialize.
+	"The clock value has enough information and is much more lightweight
+	than DateAndTime."
 	microsecondClockValue := DateAndTime clock microsecondClockValue.
+
 	processId := Processor activeProcess name.
 	moduleName := aFunction moduleName.
 	functionName := aFunction functionName.
