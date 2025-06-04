@@ -29,6 +29,18 @@ Class {
 	#category : #'FFICallLogger-UI-Spec2'
 }
 
+{ #category : #'world menu' }
+TFLMainPresenter class >> addAsMenuCommandOn: aBuilder [
+	<worldMenu>
+
+	(aBuilder item: #'FFI Call Logger')
+		parent: #Debug;
+		action: [ self open ];
+		order: 3;
+		help: 'Open a tool to log, filter and inspect execution of FFI calls in Pharo.';
+		icon: (self iconNamed: #browse)
+]
+
 { #category : #layout }
 TFLMainPresenter class >> defaultLayout [
 
